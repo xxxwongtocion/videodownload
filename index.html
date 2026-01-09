@@ -74,6 +74,35 @@
             font-size: 1.8rem;
         }
 
+        /* Streaming Button */
+        .streaming-btn {
+            margin-left: auto;
+            padding: 8px 16px;
+            background: linear-gradient(135deg, var(--secondary), #ff0066);
+            color: white;
+            border: none;
+            border-radius: var(--radius-small);
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(255, 51, 102, 0.3);
+        }
+
+        .streaming-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 51, 102, 0.4);
+        }
+
+        .streaming-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 10px rgba(255, 51, 102, 0.3);
+        }
+
         /* Main Container */
         .app-container {
             max-width: 500px;
@@ -460,6 +489,19 @@
             .quality-grid {
                 grid-template-columns: repeat(3, 1fr);
             }
+            
+            .streaming-btn {
+                padding: 6px 12px;
+                font-size: 0.8rem;
+            }
+            
+            .streaming-btn span {
+                display: none;
+            }
+            
+            .streaming-btn i {
+                margin-right: 0;
+            }
         }
 
         /* Dark Mode Enhancements */
@@ -484,6 +526,12 @@
             <i class="fas fa-bolt"></i>
             <span>DarkX</span>
         </div>
+        
+        <!-- Streaming Button -->
+        <a href="https://musicstreamdx.netlify.app/" target="_blank" class="streaming-btn">
+            <i class="fas fa-music"></i>
+            <span>Stream Music</span>
+        </a>
     </header>
 
     <!-- Toast Messages -->
@@ -892,4 +940,4 @@
         downloadLink.addEventListener('click', trackDownload);
     </script>
 </body>
-                </html>
+    </html>
