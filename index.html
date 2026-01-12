@@ -18,6 +18,8 @@
             --border: #333333;
             --success: #00ff88;
             --error: #ff3366;
+            --warning: #ffaa00;
+            --premium: #ffd700;
             --shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
             --radius: 16px;
             --radius-small: 12px;
@@ -52,6 +54,7 @@
             -webkit-backdrop-filter: blur(20px);
             display: flex;
             align-items: center;
+            justify-content: space-between;
             padding: 0 20px;
             z-index: 1000;
             border-bottom: 1px solid var(--border);
@@ -74,9 +77,47 @@
             font-size: 1.8rem;
         }
 
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        /* User Status */
+        .user-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .user-status.free {
+            background: rgba(255, 51, 102, 0.15);
+            color: var(--secondary);
+            border: 1px solid rgba(255, 51, 102, 0.3);
+        }
+
+        .user-status.premium {
+            background: rgba(255, 215, 0, 0.15);
+            color: var(--premium);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .downloads-left {
+            background: rgba(0, 212, 255, 0.15);
+            color: var(--primary);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+        }
+
         /* Streaming Button */
         .streaming-btn {
-            margin-left: auto;
             padding: 8px 16px;
             background: linear-gradient(135deg, var(--secondary), #ff0066);
             color: white;
@@ -98,9 +139,187 @@
             box-shadow: 0 6px 20px rgba(255, 51, 102, 0.4);
         }
 
-        .streaming-btn:active {
-            transform: translateY(0);
-            box-shadow: 0 2px 10px rgba(255, 51, 102, 0.3);
+        /* Premium Modal */
+        .premium-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            padding: 20px;
+        }
+
+        .premium-modal.active {
+            display: flex;
+        }
+
+        .premium-card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 30px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            position: relative;
+            animation: modalSlide 0.3s ease;
+        }
+
+        @keyframes modalSlide {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .close-modal:hover {
+            color: var(--text);
+        }
+
+        .premium-icon {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .premium-icon i {
+            font-size: 4rem;
+            background: linear-gradient(135deg, var(--premium), #ffaa00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .premium-title {
+            text-align: center;
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, var(--premium), #ffaa00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .premium-subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+            font-size: 1rem;
+        }
+
+        .premium-features {
+            list-style: none;
+            margin-bottom: 30px;
+        }
+
+        .premium-features li {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: var(--surface-light);
+            border-radius: var(--radius-small);
+        }
+
+        .premium-features li i {
+            color: var(--premium);
+        }
+
+        .password-input {
+            width: 100%;
+            padding: 15px;
+            background: var(--surface-light);
+            border: 2px solid var(--border);
+            border-radius: var(--radius-small);
+            color: var(--text);
+            font-size: 16px;
+            margin-bottom: 20px;
+            text-align: center;
+            letter-spacing: 2px;
+        }
+
+        .password-input:focus {
+            outline: none;
+            border-color: var(--premium);
+        }
+
+        .dev-contact {
+            background: var(--surface-light);
+            border-radius: var(--radius-small);
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+
+        .dev-contact h4 {
+            color: var(--premium);
+            margin-bottom: 10px;
+        }
+
+        .whatsapp-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: #25D366;
+            color: white;
+            text-decoration: none;
+            padding: 12px 25px;
+            border-radius: var(--radius-small);
+            font-weight: 600;
+            margin-top: 10px;
+            transition: transform 0.3s;
+        }
+
+        .whatsapp-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .premium-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .premium-btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: var(--radius-small);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .premium-btn.activate {
+            background: linear-gradient(135deg, var(--premium), #ffaa00);
+            color: #000;
+        }
+
+        .premium-btn.share {
+            background: var(--surface-light);
+            color: var(--text);
+            border: 2px solid var(--border);
         }
 
         /* Main Container */
@@ -188,13 +407,29 @@
 
         #downloadBtn:active {
             transform: scale(0.98);
-            box-shadow: 0 2px 8px rgba(0, 212, 255, 0.3);
         }
 
         #downloadBtn:disabled {
             opacity: 0.6;
             cursor: not-allowed;
             transform: none !important;
+        }
+
+        /* Limit Warning */
+        .limit-warning {
+            background: rgba(255, 170, 0, 0.1);
+            border: 1px solid var(--warning);
+            border-radius: var(--radius-small);
+            padding: 15px;
+            margin-top: 15px;
+            display: none;
+            align-items: center;
+            gap: 12px;
+            color: var(--warning);
+        }
+
+        .limit-warning i {
+            font-size: 1.2rem;
         }
 
         /* Loading State */
@@ -347,7 +582,6 @@
 
         .download-main-btn:active {
             transform: scale(0.98);
-            box-shadow: 0 2px 10px rgba(0, 255, 136, 0.3);
         }
 
         /* Message Toast */
@@ -396,6 +630,12 @@
             background: rgba(255, 51, 102, 0.1);
             border-color: var(--error);
             color: var(--error);
+        }
+
+        .toast.warning {
+            background: rgba(255, 170, 0, 0.1);
+            border-color: var(--warning);
+            color: var(--warning);
         }
 
         /* Recent Downloads */
@@ -473,7 +713,8 @@
             }
             
             .search-card,
-            .result-card {
+            .result-card,
+            .premium-card {
                 padding: 20px;
             }
             
@@ -490,32 +731,18 @@
                 grid-template-columns: repeat(3, 1fr);
             }
             
-            .streaming-btn {
-                padding: 6px 12px;
-                font-size: 0.8rem;
-            }
-            
-            .streaming-btn span {
+            .streaming-btn span,
+            .user-status span:not(.downloads-left) {
                 display: none;
             }
             
-            .streaming-btn i {
-                margin-right: 0;
+            .premium-actions {
+                flex-direction: column;
             }
-        }
-
-        /* Dark Mode Enhancements */
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --background: #0a0a0a;
-                --surface: #151515;
-                --surface-light: #202020;
+            
+            .header-controls {
+                gap: 10px;
             }
-        }
-
-        /* Smooth Transitions */
-        * {
-            transition: background-color 0.3s, border-color 0.3s;
         }
     </style>
 </head>
@@ -527,12 +754,80 @@
             <span>DarkX</span>
         </div>
         
-        <!-- Streaming Button -->
-        <a href="https://musicstreamdx.netlify.app/" target="_blank" class="streaming-btn">
-            <i class="fas fa-music"></i>
-            <span>Stream Music</span>
-        </a>
+        <div class="header-controls">
+            <!-- User Status -->
+            <div class="user-status free" id="userStatus">
+                <i class="fas fa-user"></i>
+                <span>Free User</span>
+                <div class="downloads-left" id="downloadsLeft">3/3</div>
+            </div>
+            
+            <!-- Streaming Button -->
+            <a href="https://musicstreamdx.netlify.app/" target="_blank" class="streaming-btn">
+                <i class="fas fa-music"></i>
+                <span>Stream Music</span>
+            </a>
+        </div>
     </header>
+
+    <!-- Premium Modal -->
+    <div class="premium-modal" id="premiumModal">
+        <div class="premium-card">
+            <button class="close-modal" id="closeModal">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <div class="premium-icon">
+                <i class="fas fa-crown"></i>
+            </div>
+            
+            <h2 class="premium-title">Upgrade to Premium</h2>
+            <p class="premium-subtitle">Unlock unlimited downloads and premium features</p>
+            
+            <ul class="premium-features">
+                <li>
+                    <i class="fas fa-infinity"></i>
+                    <span>Unlimited daily downloads</span>
+                </li>
+                <li>
+                    <i class="fas fa-hd"></i>
+                    <span>Highest quality videos (4K)</span>
+                </li>
+                <li>
+                    <i class="fas fa-bolt"></i>
+                    <span>Faster download speeds</span>
+                </li>
+                <li>
+                    <i class="fas fa-ad"></i>
+                    <span>No ads or interruptions</span>
+                </li>
+            </ul>
+            
+            <div class="dev-contact">
+                <h4><i class="fas fa-phone-alt"></i> Contact Developer</h4>
+                <p>For premium access, contact developer on WhatsApp:</p>
+                <a href="https://wa.me/255652063198" target="_blank" class="whatsapp-btn">
+                    <i class="fab fa-whatsapp"></i>
+                    0652 063 198
+                </a>
+            </div>
+            
+            <input type="password" 
+                   id="premiumPassword" 
+                   class="password-input" 
+                   placeholder="Enter Premium Password"
+                   maxlength="10">
+            
+            <div class="premium-actions">
+                <button class="premium-btn share" onclick="shareApp()">
+                    <i class="fas fa-share-alt"></i> Share App
+                </button>
+                <button class="premium-btn activate" onclick="activatePremium()">
+                    <i class="fas fa-key"></i> Activate Premium
+                </button>
+            </div>
+        </div>
+    </div>
 
     <!-- Toast Messages -->
     <div class="toast-container" id="toastContainer"></div>
@@ -556,10 +851,22 @@
                        spellcheck="false">
             </div>
             
-            <button id="downloadBtn" onclick="downloadVideo()">
+            <button id="downloadBtn" onclick="checkDownloadLimit()">
                 <i class="fas fa-cloud-download-alt"></i>
                 Get Video
             </button>
+            
+            <!-- Limit Warning -->
+            <div class="limit-warning" id="limitWarning">
+                <i class="fas fa-exclamation-triangle"></i>
+                <div>
+                    <strong>Daily Limit Reached!</strong><br>
+                    Free users can only download 3 videos per day.
+                    <a href="#" onclick="showPremiumModal()" style="color: var(--warning); text-decoration: underline;">
+                        Upgrade to Premium
+                    </a>
+                </div>
+            </div>
         </div>
 
         <!-- Loading State -->
@@ -601,7 +908,7 @@
             </a>
         </div>
 
-        <!-- Recent Downloads (Optional) -->
+        <!-- Recent Downloads -->
         <div class="recent-section" id="recentSection">
             <h4 class="section-title">
                 <i class="fas fa-history"></i>
@@ -616,7 +923,7 @@
     <!-- App Footer -->
     <footer class="app-footer">
         <p>© 2024 DarkX Downloader | For Personal Use</p>
-        <p>Downloaded videos are for personal viewing only</p>
+        <p>Free users: 3 downloads/day | Premium: Unlimited downloads</p>
     </footer>
 
     <script>
@@ -624,6 +931,14 @@
         let currentVideoData = null;
         let selectedQuality = '360';
         let recentDownloads = [];
+        let userData = {
+            isPremium: false,
+            downloadsToday: 0,
+            lastDownloadDate: null,
+            premiumUntil: null
+        };
+        const MAX_FREE_DOWNLOADS = 3;
+        const PREMIUM_PASSWORD = "DarkXDev";
 
         // DOM Elements
         const videoInput = document.getElementById('videoInput');
@@ -640,21 +955,31 @@
         const recentSection = document.getElementById('recentSection');
         const recentList = document.getElementById('recentList');
         const toastContainer = document.getElementById('toastContainer');
+        const premiumModal = document.getElementById('premiumModal');
+        const closeModal = document.getElementById('closeModal');
+        const premiumPassword = document.getElementById('premiumPassword');
+        const userStatus = document.getElementById('userStatus');
+        const downloadsLeft = document.getElementById('downloadsLeft');
+        const limitWarning = document.getElementById('limitWarning');
 
         // Initialize App
         function initApp() {
+            loadUserData();
             loadRecentDownloads();
             setupEventListeners();
+            updateUserUI();
             
-            // Focus on input on app start
             setTimeout(() => videoInput.focus(), 500);
+            
+            // Check if user needs to share
+            checkShareRequirement();
         }
 
         // Setup Event Listeners
         function setupEventListeners() {
             // Enter key to download
             videoInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') downloadVideo();
+                if (e.key === 'Enter') checkDownloadLimit();
             });
 
             // Input validation
@@ -662,24 +987,230 @@
                 downloadBtn.disabled = !e.target.value.trim();
             });
 
-            // Prevent right-click on download button
-            downloadLink.addEventListener('contextmenu', (e) => {
-                e.preventDefault();
+            // Close modal
+            closeModal.addEventListener('click', hidePremiumModal);
+            premiumModal.addEventListener('click', (e) => {
+                if (e.target === premiumModal) hidePremiumModal();
             });
+
+            // Track downloads
+            downloadLink.addEventListener('click', trackDownload);
         }
 
-        // Show Toast Message
+        // User Management Functions
+        function loadUserData() {
+            try {
+                const saved = localStorage.getItem('darkx_user_data');
+                if (saved) {
+                    userData = JSON.parse(saved);
+                    
+                    // Reset daily downloads if it's a new day
+                    const today = new Date().toDateString();
+                    if (userData.lastDownloadDate !== today) {
+                        userData.downloadsToday = 0;
+                        userData.lastDownloadDate = today;
+                        saveUserData();
+                    }
+                }
+            } catch (e) {
+                console.warn('Could not load user data:', e);
+            }
+        }
+
+        function saveUserData() {
+            try {
+                localStorage.setItem('darkx_user_data', JSON.stringify(userData));
+            } catch (e) {
+                console.warn('Could not save user data:', e);
+            }
+        }
+
+        function updateUserUI() {
+            const downloadsRemaining = MAX_FREE_DOWNLOADS - userData.downloadsToday;
+            
+            if (userData.isPremium) {
+                userStatus.className = 'user-status premium';
+                userStatus.innerHTML = `
+                    <i class="fas fa-crown"></i>
+                    <span>Premium User</span>
+                    <div class="downloads-left">∞</div>
+                `;
+            } else {
+                userStatus.className = 'user-status free';
+                userStatus.innerHTML = `
+                    <i class="fas fa-user"></i>
+                    <span>Free User</span>
+                    <div class="downloads-left">${downloadsRemaining}/${MAX_FREE_DOWNLOADS}</div>
+                `;
+            }
+            
+            // Show/hide limit warning
+            limitWarning.style.display = (!userData.isPremium && downloadsRemaining <= 0) ? 'flex' : 'none';
+        }
+
+        // Check Download Limit
+        function checkDownloadLimit() {
+            if (userData.isPremium) {
+                downloadVideo();
+                return;
+            }
+            
+            const downloadsRemaining = MAX_FREE_DOWNLOADS - userData.downloadsToday;
+            
+            if (downloadsRemaining <= 0) {
+                showToast('Daily limit reached! Upgrade to Premium for unlimited downloads.', 'warning');
+                limitWarning.style.display = 'flex';
+                return;
+            }
+            
+            // Check if user has shared the app
+            if (!hasSharedApp()) {
+                showPremiumModal();
+                showToast('Please share the app first to continue downloading', 'warning');
+                return;
+            }
+            
+            downloadVideo();
+        }
+
+        // Download Tracking
+        function incrementDownloadCount() {
+            if (!userData.isPremium) {
+                userData.downloadsToday++;
+                userData.lastDownloadDate = new Date().toDateString();
+                saveUserData();
+                updateUserUI();
+            }
+        }
+
+        // Premium Functions
+        function showPremiumModal() {
+            premiumModal.classList.add('active');
+            premiumPassword.focus();
+        }
+
+        function hidePremiumModal() {
+            premiumModal.classList.remove('active');
+            premiumPassword.value = '';
+        }
+
+        function activatePremium() {
+            const password = premiumPassword.value.trim();
+            
+            if (password !== PREMIUM_PASSWORD) {
+                showToast('Invalid premium password! Contact developer.', 'error');
+                premiumPassword.focus();
+                return;
+            }
+            
+            userData.isPremium = true;
+            userData.premiumUntil = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(); // 1 year
+            
+            saveUserData();
+            updateUserUI();
+            hidePremiumModal();
+            
+            showToast('🎉 Premium activated! Enjoy unlimited downloads!', 'success');
+        }
+
+        // Share App Function
+        function shareApp() {
+            const shareText = "Download YouTube videos easily with DarkX Downloader! 🚀\n\n";
+            const shareUrl = "https://www.mediafire.com/file/2j6pti8s5w10435/video_download_1.0.zip/file";
+            const fullText = shareText + shareUrl;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'DarkX Downloader',
+                    text: shareText,
+                    url: shareUrl
+                }).then(() => {
+                    markAsShared();
+                    showToast('Thank you for sharing! You can now download.', 'success');
+                }).catch(console.error);
+            } else {
+                // Fallback for browsers without Web Share API
+                navigator.clipboard.writeText(fullText).then(() => {
+                    markAsShared();
+                    showToast('Link copied to clipboard! Please share it.', 'success');
+                }).catch(() => {
+                    // Last resort - show the text
+                    prompt("Copy this link and share it:", fullText);
+                    markAsShared();
+                });
+            }
+        }
+
+        function markAsShared() {
+            localStorage.setItem('darkx_app_shared', 'true');
+        }
+
+        function hasSharedApp() {
+            return localStorage.getItem('darkx_app_shared') === 'true' || userData.isPremium;
+        }
+
+        function checkShareRequirement() {
+            if (!hasSharedApp() && userData.downloadsToday >= 1) {
+                setTimeout(() => {
+                    showPremiumModal();
+                    showToast('Please share the app to continue downloading', 'warning');
+                }, 1000);
+            }
+        }
+
+        // Download Video Function (modified)
+        async function downloadVideo() {
+            const query = videoInput.value.trim();
+            
+            if (!query) {
+                showToast('Please enter a YouTube URL', 'error');
+                videoInput.focus();
+                return;
+            }
+
+            setLoading(true);
+            resultCard.style.display = 'none';
+
+            try {
+                const apiUrl = `https://yt-dl.officialhectormanuel.workers.dev/?url=${encodeURIComponent(query)}`;
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+
+                if (!data.status || !data.videos) {
+                    throw new Error(data.message || 'Failed to fetch video');
+                }
+
+                currentVideoData = data;
+                updateVideoUI(data);
+                updateQualityOptions(data.videos);
+                updateDownloadLink(selectedQuality);
+
+                resultCard.style.display = 'block';
+                showToast('Video ready to download!', 'success');
+
+                // Increment download count
+                incrementDownloadCount();
+                addToRecentDownloads(data);
+
+            } catch (error) {
+                console.error('Download error:', error);
+                showToast(`Error: ${error.message}`, 'error');
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        // Toast Messages
         function showToast(message, type = 'success') {
             const toast = document.createElement('div');
             toast.className = `toast ${type}`;
             toast.innerHTML = `
-                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : 'exclamation-circle'}"></i>
                 <span>${message}</span>
             `;
 
             toastContainer.appendChild(toast);
 
-            // Auto remove after 4 seconds
             setTimeout(() => {
                 toast.style.opacity = '0';
                 toast.style.transform = 'translateY(-20px)';
@@ -696,54 +1227,7 @@
                 : '<i class="fas fa-cloud-download-alt"></i> Get Video';
         }
 
-        // Download Video Function
-        async function downloadVideo() {
-            const query = videoInput.value.trim();
-            
-            if (!query) {
-                showToast('Please enter a YouTube URL', 'error');
-                videoInput.focus();
-                return;
-            }
-
-            // Show loading
-            setLoading(true);
-            resultCard.style.display = 'none';
-
-            try {
-                // Use YouTube download API
-                const apiUrl = `https://yt-dl.officialhectormanuel.workers.dev/?url=${encodeURIComponent(query)}`;
-                const response = await fetch(apiUrl);
-                const data = await response.json();
-
-                if (!data.status || !data.videos) {
-                    throw new Error(data.message || 'Failed to fetch video');
-                }
-
-                // Store video data
-                currentVideoData = data;
-
-                // Update UI
-                updateVideoUI(data);
-                updateQualityOptions(data.videos);
-                updateDownloadLink(selectedQuality);
-
-                // Show results
-                resultCard.style.display = 'block';
-                showToast('Video ready to download!', 'success');
-
-                // Add to recent downloads
-                addToRecentDownloads(data);
-
-            } catch (error) {
-                console.error('Download error:', error);
-                showToast(`Error: ${error.message}`, 'error');
-            } finally {
-                setLoading(false);
-            }
-        }
-
-        // Update Video UI
+        // Update Video UI (keep existing)
         function updateVideoUI(data) {
             videoTitle.textContent = data.title || 'Untitled Video';
             
@@ -754,12 +1238,10 @@
                 };
             }
 
-            // Format duration
             const duration = data.duration || data.length_seconds;
             const durationText = formatDuration(duration);
             videoDuration.innerHTML = `<i class="far fa-clock"></i> ${durationText}`;
 
-            // Format views
             const views = data.view_count;
             const viewsText = formatViews(views);
             videoViews.innerHTML = `<i class="fas fa-eye"></i> ${viewsText}`;
@@ -769,9 +1251,14 @@
         function updateQualityOptions(videos) {
             qualityGrid.innerHTML = '';
             
-            const qualities = Object.keys(videos)
+            let qualities = Object.keys(videos)
                 .filter(q => videos[q])
                 .sort((a, b) => parseInt(b) - parseInt(a));
+
+            // For free users, limit to 720p max
+            if (!userData.isPremium) {
+                qualities = qualities.filter(q => parseInt(q) <= 720);
+            }
 
             qualities.forEach(quality => {
                 const option = document.createElement('div');
@@ -789,9 +1276,13 @@
 
         // Select Quality
         function selectQuality(quality) {
+            if (!userData.isPremium && parseInt(quality) > 720) {
+                showToast('720p is maximum for free users. Upgrade to Premium for 4K.', 'warning');
+                return;
+            }
+            
             selectedQuality = quality;
             
-            // Update UI
             document.querySelectorAll('.quality-option').forEach(option => {
                 option.classList.remove('selected');
                 if (option.dataset.quality === quality) {
@@ -799,7 +1290,6 @@
                 }
             });
 
-            // Update download link
             updateDownloadLink(quality);
             showToast(`Quality set to ${quality}p`, 'success');
         }
@@ -822,11 +1312,6 @@
             if (!currentVideoData) return;
             
             showToast('Starting download...', 'success');
-            
-            // Add to recent downloads
-            addToRecentDownloads(currentVideoData);
-            
-            // Analytics (optional)
             console.log(`Download tracked: ${currentVideoData.title} at ${selectedQuality}p`);
         }
 
@@ -860,7 +1345,7 @@
             return views;
         }
 
-        // Recent Downloads Functions
+        // Recent Downloads Functions (keep existing)
         function addToRecentDownloads(videoData) {
             const recentItem = {
                 id: Date.now(),
@@ -872,7 +1357,7 @@
             };
 
             recentDownloads.unshift(recentItem);
-            recentDownloads = recentDownloads.slice(0, 5); // Keep only 5 most recent
+            recentDownloads = recentDownloads.slice(0, 5);
             
             saveRecentDownloads();
             updateRecentDownloadsUI();
@@ -926,18 +1411,22 @@
 
         // Re-download from recent
         function reDownload(url, title) {
+            if (!userData.isPremium && userData.downloadsToday >= MAX_FREE_DOWNLOADS) {
+                showToast('Daily limit reached! Upgrade to Premium.', 'warning');
+                return;
+            }
+            
             const a = document.createElement('a');
             a.href = url;
             a.download = `${title.replace(/[^a-z0-9]/gi, '_')}.mp4`;
             a.click();
+            
+            incrementDownloadCount();
             showToast('Starting re-download...', 'success');
         }
 
         // Initialize app when page loads
         document.addEventListener('DOMContentLoaded', initApp);
-
-        // Add download tracking
-        downloadLink.addEventListener('click', trackDownload);
     </script>
 </body>
     </html>
