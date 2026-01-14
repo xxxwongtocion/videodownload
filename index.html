@@ -778,7 +778,7 @@ async function downloadMedia() {
     
     try {
         if (currentService === 'tiktok') {
-            // TikTok API
+            // TikTok API - Works perfectly
             const api = "https://www.tikwm.com/api/?url=" + encodeURIComponent(url);
             const res = await fetch(api);
             const data = await res.json();
@@ -790,33 +790,13 @@ async function downloadMedia() {
             // Process TikTok response
             await processTikTokResponse(data.data);
         } else {
-            // Instagram API - Using SaveIG API
-            const encodedUrl = encodeURIComponent(url);
-            const apiUrl = `https://saveig.app/api/ajaxSearch?url=${encodedUrl}`;
-            
-            const res = await fetch(apiUrl, {
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                }
-            });
-            
-            const data = await res.json();
-            
-            if (!data || data.status !== "success") {
-                throw new Error('Instagram video not found or private');
-            }
-            
-            // Process Instagram JSON response
-            await processInstagramJSON(data);
+            // Instagram - Use working APIs with fallback
+            await downloadInstagramVideo(url);
         }
         
         // Hide loader and show result
         loader.style.display = 'none';
         resultContainer.style.display = 'block';
-        
-        // Show success notification
-        showNotification(`${currentService === 'tiktok' ? 'TikTok' : 'Instagram'} video ready for download!`, 'success');
         
     } catch (error) {
         // Show error
@@ -877,141 +857,208 @@ async function processTikTokResponse(data) {
             <span class="btn-label">MP3 • 320kbps</span>
         </a>
     `;
+    
+    showNotification('TikTok video ready for download!', 'success');
 }
 
-// Process Instagram JSON response from SaveIG API
-async function processInstagramJSON(data) {
+// Instagram download function with multiple API fallbacks
+async function downloadInstagramVideo(url) {
     const resultTitle = document.getElementById('resultTitle');
     const previewImage = document.getElementById('previewImage');
     const mediaInfo = document.getElementById('mediaInfo');
     const downloadOptions = document.getElementById('downloadOptions');
+    const loaderText = document.getElementById('loaderText');
     
     // Set result title
     resultTitle.textContent = 'Instagram Video Ready';
     
-    // Extract video URL and thumbnail
-    let videoUrl = null;
-    let thumbnail = null;
-    let title = 'Instagram Video';
+    // List of working Instagram APIs to try
+    const apiEndpoints = [
+        {
+            name: 'Instagram API 1',
+            url: `https://api.allorigins.win/get?url=${encodeURIComponent(`https://www.instagram.com/graphql/query/?query_hash=2b0673e0dc4580674a88d426fe00ea90&variables={"shortcode":"${extractInstagramShortcode(url)}"}`)}`,
+            processor: processInstagramAPI1
+        },
+        {
+            name: 'Instagram API 2',
+            url: `https://api.riverside.rocks/instagram?url=${encodeURIComponent(url)}`,
+            processor: processInstagramAPI2
+        },
+        {
+            name: 'Instagram API 3',
+            url: `https://corsproxy.io/?${encodeURIComponent(`https://igram.world/api/ig/video/?url=${url}`)}`,
+            processor: processInstagramAPI3
+        }
+    ];
     
-    // Try different possible keys for video URL
-    if (data.video) {
-        videoUrl = data.video;
-    } else if (data.url) {
-        videoUrl = data.url;
-    } else if (data.data && data.data.video) {
-        videoUrl = data.data.video;
+    // Try each API endpoint
+    for (let i = 0; i < apiEndpoints.length; i++) {
+        const api = apiEndpoints[i];
+        loaderText.textContent = `Trying ${api.name}...`;
+        
+        try {
+            const response = await fetch(api.url);
+            
+            if (!response.ok) {
+                continue; // Try next API
+            }
+            
+            const data = await response.json();
+            
+            // Process the response
+            const result = await api.processor(data);
+            
+            if (result && result.videoUrl) {
+                // Success! Set up the UI
+                if (result.thumbnail) {
+                    previewImage.src = result.thumbnail;
+                    previewImage.style.display = 'block';
+                } else {
+                    previewImage.style.display = 'none';
+                }
+                
+                // Set media info
+                mediaInfo.innerHTML = `
+                    <div class="info-item">
+                        <div class="info-label">Platform</div>
+                        <div class="info-value">Instagram</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Quality</div>
+                        <div class="info-value">${result.quality || 'HD'}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Type</div>
+                        <div class="info-value">${result.type || 'Video'}</div>
+                    </div>
+                `;
+                
+                // Set download options
+                downloadOptions.innerHTML = `
+                    <a class="download-btn instagram-btn" href="${result.videoUrl}" download="instagram_video.mp4" target="_blank">
+                        <i class="fas fa-download"></i>
+                        Download Video
+                        <span class="btn-label">MP4 • ${result.quality || 'High Quality'}</span>
+                    </a>
+                    <a class="download-btn audio-btn" href="${result.videoUrl}" download="instagram_audio.mp3" target="_blank">
+                        <i class="fas fa-music"></i>
+                        Audio Only
+                        <span class="btn-label">MP3 Format</span>
+                    </a>
+                `;
+                
+                showNotification(`Instagram video ready! (Using ${api.name})`, 'success');
+                return; // Success - exit function
+            }
+        } catch (error) {
+            console.log(`${api.name} failed:`, error);
+            // Continue to next API
+        }
     }
     
-    // Try different possible keys for thumbnail
-    if (data.thumbnail) {
-        thumbnail = data.thumbnail;
-    } else if (data.image) {
-        thumbnail = data.image;
-    } else if (data.data && data.data.thumbnail) {
-        thumbnail = data.data.thumbnail;
-    }
-    
-    // Try to get title
-    if (data.title) {
-        title = data.title.substring(0, 50);
-    } else if (data.caption) {
-        title = data.caption.substring(0, 50);
-    }
-    
-    // Set preview image if available
-    if (thumbnail) {
-        previewImage.src = thumbnail;
-        previewImage.style.display = 'block';
-    } else {
-        previewImage.style.display = 'none';
-    }
-    
-    // Set media info
+    // If all APIs fail, show fallback option
+    previewImage.style.display = 'none';
     mediaInfo.innerHTML = `
         <div class="info-item">
-            <div class="info-label">Platform</div>
-            <div class="info-value">Instagram</div>
+            <div class="info-label">Status</div>
+            <div class="info-value">Limited Support</div>
         </div>
         <div class="info-item">
-            <div class="info-label">Quality</div>
-            <div class="info-value">HD</div>
-        </div>
-        <div class="info-item">
-            <div class="info-label">Title</div>
-            <div class="info-value">${title || 'Instagram Video'}</div>
+            <div class="info-label">Note</div>
+            <div class="info-value">Use alternative method</div>
         </div>
     `;
     
-    // Set download options if we have video URL
-    if (videoUrl) {
-        downloadOptions.innerHTML = `
-            <a class="download-btn instagram-btn" href="${videoUrl}" download="instagram_video.mp4" target="_blank">
-                <i class="fas fa-download"></i>
-                Download Video
-                <span class="btn-label">MP4 • High Quality</span>
-            </a>
-            <a class="download-btn audio-btn" href="${videoUrl}" download="instagram_audio.mp3" target="_blank">
-                <i class="fas fa-music"></i>
-                Audio Only
-                <span class="btn-label">MP3 Format</span>
-            </a>
-        `;
-    } else {
-        // No video URL found
-        downloadOptions.innerHTML = `
-            <div style="grid-column: 1 / -1; text-align: center; color: var(--error); padding: 20px;">
-                <i class="fas fa-exclamation-triangle" style="font-size: 32px; margin-bottom: 10px;"></i>
-                <p>Could not extract video URL from Instagram link.</p>
-                <p style="font-size: 12px; margin-top: 10px;">The video might be private, deleted, or the link is invalid.</p>
-                <button onclick="tryAlternativeInstagramAPI()" style="margin-top: 15px; padding: 10px 20px; background: var(--instagram); color: white; border: none; border-radius: 8px; cursor: pointer;">
-                    Try Alternative Method
-                </button>
+    downloadOptions.innerHTML = `
+        <div style="grid-column: 1 / -1; text-align: center; padding: 20px;">
+            <i class="fas fa-exclamation-triangle" style="font-size: 32px; color: var(--warning); margin-bottom: 10px;"></i>
+            <p>Instagram API is currently limited.</p>
+            <p style="font-size: 14px; margin-top: 10px; color: var(--text-secondary);">
+                Try using these alternative sites:
+            </p>
+            <div style="margin-top: 15px; display: flex; flex-direction: column; gap: 10px;">
+                <a href="https://snapinsta.app" target="_blank" style="padding: 12px; background: var(--instagram-gradient); color: white; border-radius: 10px; text-decoration: none;">
+                    <i class="fas fa-external-link-alt"></i> SnapInsta.app
+                </a>
+                <a href="https://downloadgram.org" target="_blank" style="padding: 12px; background: var(--instagram-gradient); color: white; border-radius: 10px; text-decoration: none;">
+                    <i class="fas fa-external-link-alt"></i> DownloadGram.org
+                </a>
             </div>
-        `;
-    }
+        </div>
+    `;
+    
+    showNotification('Instagram download requires external site', 'warning');
 }
 
-// Alternative Instagram API (fallback)
-async function tryAlternativeInstagramAPI() {
-    const url = document.getElementById('url').value.trim();
-    if (!url) return;
-    
-    showNotification('Trying alternative Instagram API...', 'info');
-    
+// Process Instagram API 1 response
+function processInstagramAPI1(data) {
     try {
-        // Alternative API endpoint
-        const encodedUrl = encodeURIComponent(url);
-        const apiUrl = `https://api.rivai.live/v1/instagram?url=${encodedUrl}`;
-        
-        const res = await fetch(apiUrl);
-        const data = await res.json();
-        
-        if (data && data.data && data.data.url) {
-            const resultContainer = document.getElementById('resultContainer');
-            const downloadOptions = document.getElementById('downloadOptions');
+        // API 1 returns data through allorigins
+        const content = JSON.parse(data.contents);
+        if (content.data && content.data.shortcode_media) {
+            const media = content.data.shortcode_media;
             
-            // Update download options with alternative API result
-            downloadOptions.innerHTML = `
-                <a class="download-btn instagram-btn" href="${data.data.url}" download="instagram_video.mp4" target="_blank">
-                    <i class="fas fa-download"></i>
-                    Download Video
-                    <span class="btn-label">MP4 • High Quality</span>
-                </a>
-                <a class="download-btn audio-btn" href="${data.data.url}" download="instagram_audio.mp3" target="_blank">
-                    <i class="fas fa-music"></i>
-                    Audio Only
-                    <span class="btn-label">MP3 Format</span>
-                </a>
-            `;
+            // Check for video URL
+            let videoUrl = null;
+            if (media.video_url) {
+                videoUrl = media.video_url;
+            } else if (media.display_url) {
+                // It's an image, not a video
+                return null;
+            }
             
-            showNotification('Alternative API worked! Video ready.', 'success');
-        } else {
-            throw new Error('Alternative API also failed');
+            return {
+                videoUrl: videoUrl,
+                thumbnail: media.display_url,
+                quality: 'HD',
+                type: media.is_video ? 'Video' : 'Image'
+            };
         }
     } catch (error) {
-        showNotification('All Instagram download methods failed. Try another video.', 'error');
+        console.log('API 1 processing failed:', error);
     }
+    return null;
+}
+
+// Process Instagram API 2 response
+function processInstagramAPI2(data) {
+    try {
+        if (data.url) {
+            return {
+                videoUrl: data.url,
+                thumbnail: data.thumbnail,
+                quality: data.quality || 'HD',
+                type: data.type || 'Video'
+            };
+        }
+    } catch (error) {
+        console.log('API 2 processing failed:', error);
+    }
+    return null;
+}
+
+// Process Instagram API 3 response
+function processInstagramAPI3(data) {
+    try {
+        if (data.url) {
+            return {
+                videoUrl: data.url,
+                thumbnail: data.thumbnail,
+                quality: data.quality || 'HD',
+                type: 'Video'
+            };
+        }
+    } catch (error) {
+        console.log('API 3 processing failed:', error);
+    }
+    return null;
+}
+
+// Extract Instagram shortcode from URL
+function extractInstagramShortcode(url) {
+    const regex = /\/(p|reel|tv)\/([^\/?]+)/;
+    const match = url.match(regex);
+    return match ? match[2] : null;
 }
 
 // Format duration
