@@ -467,6 +467,7 @@ body::before {
 
 .preview-image {
     max-width: 100%;
+    max-height: 200px;
     border-radius: 12px;
     margin-bottom: 15px;
     display: none;
@@ -776,13 +777,11 @@ async function downloadMedia() {
     loaderText.textContent = `Processing ${currentService === 'tiktok' ? 'TikTok' : 'Instagram'} video...`;
     
     try {
-        let data;
-        
         if (currentService === 'tiktok') {
             // TikTok API
             const api = "https://www.tikwm.com/api/?url=" + encodeURIComponent(url);
             const res = await fetch(api);
-            data = await res.json();
+            const data = await res.json();
             
             if (!data || !data.data || !data.data.play) {
                 throw new Error('TikTok video not found or private');
@@ -791,24 +790,25 @@ async function downloadMedia() {
             // Process TikTok response
             await processTikTokResponse(data.data);
         } else {
-            // Instagram API
-            const formData = new FormData();
-            formData.append("url", url);
+            // Instagram API - Using SaveIG API
+            const encodedUrl = encodeURIComponent(url);
+            const apiUrl = `https://saveig.app/api/ajaxSearch?url=${encodedUrl}`;
             
-            const res = await fetch("https://snapinsta.app/action.php", {
-                method: "POST",
-                body: formData
+            const res = await fetch(apiUrl, {
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
             });
             
-            const text = await res.text();
-            data = await processInstagramResponse(text);
+            const data = await res.json();
             
-            if (!data || !data.video_url) {
+            if (!data || data.status !== "success") {
                 throw new Error('Instagram video not found or private');
             }
             
-            // Process Instagram response
-            await processInstagramData(data);
+            // Process Instagram JSON response
+            await processInstagramJSON(data);
         }
         
         // Hide loader and show result
@@ -879,61 +879,8 @@ async function processTikTokResponse(data) {
     `;
 }
 
-// Process Instagram response text
-async function processInstagramResponse(html) {
-    // Create a temporary DOM element to parse the HTML
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(html, 'text/html');
-    
-    // Try to find video URL
-    let videoUrl = null;
-    let thumbnail = null;
-    let title = 'Instagram Video';
-    
-    // Look for video sources
-    const videoElements = doc.querySelectorAll('video source');
-    if (videoElements.length > 0) {
-        videoUrl = videoElements[0].getAttribute('src');
-    }
-    
-    // Look for download buttons
-    const downloadButtons = doc.querySelectorAll('a[href*="cdn"]');
-    for (const button of downloadButtons) {
-        const href = button.getAttribute('href');
-        if (href && (href.includes('.mp4') || href.includes('video'))) {
-            videoUrl = href;
-            break;
-        }
-    }
-    
-    // Look for thumbnail
-    const imgElements = doc.querySelectorAll('img');
-    for (const img of imgElements) {
-        const src = img.getAttribute('src');
-        if (src && (src.includes('instagram') || src.includes('cdn'))) {
-            thumbnail = src;
-            break;
-        }
-    }
-    
-    // Look for title/description
-    const titleElements = doc.querySelectorAll('h1, h2, .title, .description');
-    for (const element of titleElements) {
-        if (element.textContent && element.textContent.trim().length > 0) {
-            title = element.textContent.trim().substring(0, 50);
-            break;
-        }
-    }
-    
-    return {
-        video_url: videoUrl,
-        thumbnail: thumbnail,
-        title: title
-    };
-}
-
-// Process Instagram data
-async function processInstagramData(data) {
+// Process Instagram JSON response from SaveIG API
+async function processInstagramJSON(data) {
     const resultTitle = document.getElementById('resultTitle');
     const previewImage = document.getElementById('previewImage');
     const mediaInfo = document.getElementById('mediaInfo');
@@ -942,9 +889,39 @@ async function processInstagramData(data) {
     // Set result title
     resultTitle.textContent = 'Instagram Video Ready';
     
-    // Set preview image if available
+    // Extract video URL and thumbnail
+    let videoUrl = null;
+    let thumbnail = null;
+    let title = 'Instagram Video';
+    
+    // Try different possible keys for video URL
+    if (data.video) {
+        videoUrl = data.video;
+    } else if (data.url) {
+        videoUrl = data.url;
+    } else if (data.data && data.data.video) {
+        videoUrl = data.data.video;
+    }
+    
+    // Try different possible keys for thumbnail
     if (data.thumbnail) {
-        previewImage.src = data.thumbnail;
+        thumbnail = data.thumbnail;
+    } else if (data.image) {
+        thumbnail = data.image;
+    } else if (data.data && data.data.thumbnail) {
+        thumbnail = data.data.thumbnail;
+    }
+    
+    // Try to get title
+    if (data.title) {
+        title = data.title.substring(0, 50);
+    } else if (data.caption) {
+        title = data.caption.substring(0, 50);
+    }
+    
+    // Set preview image if available
+    if (thumbnail) {
+        previewImage.src = thumbnail;
         previewImage.style.display = 'block';
     } else {
         previewImage.style.display = 'none';
@@ -962,32 +939,78 @@ async function processInstagramData(data) {
         </div>
         <div class="info-item">
             <div class="info-label">Title</div>
-            <div class="info-value">${data.title || 'Instagram Video'}</div>
+            <div class="info-value">${title || 'Instagram Video'}</div>
         </div>
     `;
     
-    // Set download options
-    if (data.video_url) {
+    // Set download options if we have video URL
+    if (videoUrl) {
         downloadOptions.innerHTML = `
-            <a class="download-btn instagram-btn" href="${data.video_url}" download="instagram_video.mp4" target="_blank">
+            <a class="download-btn instagram-btn" href="${videoUrl}" download="instagram_video.mp4" target="_blank">
                 <i class="fas fa-download"></i>
                 Download Video
                 <span class="btn-label">MP4 • High Quality</span>
             </a>
-            <a class="download-btn audio-btn" href="${data.video_url}" download="instagram_audio.mp3" target="_blank">
+            <a class="download-btn audio-btn" href="${videoUrl}" download="instagram_audio.mp3" target="_blank">
                 <i class="fas fa-music"></i>
                 Audio Only
                 <span class="btn-label">MP3 Format</span>
             </a>
         `;
     } else {
+        // No video URL found
         downloadOptions.innerHTML = `
             <div style="grid-column: 1 / -1; text-align: center; color: var(--error); padding: 20px;">
                 <i class="fas fa-exclamation-triangle" style="font-size: 32px; margin-bottom: 10px;"></i>
-                <p>Could not extract video URL. The Instagram link might be private or restricted.</p>
-                <p style="font-size: 12px; margin-top: 10px;">Try with a different Instagram video or use alternative methods.</p>
+                <p>Could not extract video URL from Instagram link.</p>
+                <p style="font-size: 12px; margin-top: 10px;">The video might be private, deleted, or the link is invalid.</p>
+                <button onclick="tryAlternativeInstagramAPI()" style="margin-top: 15px; padding: 10px 20px; background: var(--instagram); color: white; border: none; border-radius: 8px; cursor: pointer;">
+                    Try Alternative Method
+                </button>
             </div>
         `;
+    }
+}
+
+// Alternative Instagram API (fallback)
+async function tryAlternativeInstagramAPI() {
+    const url = document.getElementById('url').value.trim();
+    if (!url) return;
+    
+    showNotification('Trying alternative Instagram API...', 'info');
+    
+    try {
+        // Alternative API endpoint
+        const encodedUrl = encodeURIComponent(url);
+        const apiUrl = `https://api.rivai.live/v1/instagram?url=${encodedUrl}`;
+        
+        const res = await fetch(apiUrl);
+        const data = await res.json();
+        
+        if (data && data.data && data.data.url) {
+            const resultContainer = document.getElementById('resultContainer');
+            const downloadOptions = document.getElementById('downloadOptions');
+            
+            // Update download options with alternative API result
+            downloadOptions.innerHTML = `
+                <a class="download-btn instagram-btn" href="${data.data.url}" download="instagram_video.mp4" target="_blank">
+                    <i class="fas fa-download"></i>
+                    Download Video
+                    <span class="btn-label">MP4 • High Quality</span>
+                </a>
+                <a class="download-btn audio-btn" href="${data.data.url}" download="instagram_audio.mp3" target="_blank">
+                    <i class="fas fa-music"></i>
+                    Audio Only
+                    <span class="btn-label">MP3 Format</span>
+                </a>
+            `;
+            
+            showNotification('Alternative API worked! Video ready.', 'success');
+        } else {
+            throw new Error('Alternative API also failed');
+        }
+    } catch (error) {
+        showNotification('All Instagram download methods failed. Try another video.', 'error');
     }
 }
 
@@ -1040,35 +1063,6 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('resultContainer').style.display = 'none';
     });
 });
-
-// Alternative Instagram API function (fallback)
-async function fetchInstagramAlternative(url) {
-    // This is a fallback API that might work if the primary fails
-    try {
-        const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(`https://instagram.com/api/v1/media/${extractInstagramId(url)}/info/`)}`;
-        const response = await fetch(proxyUrl);
-        const data = await response.json();
-        
-        if (data && data.items && data.items[0]) {
-            const item = data.items[0];
-            return {
-                video_url: item.video_versions ? item.video_versions[0].url : null,
-                thumbnail: item.image_versions2 ? item.image_versions2.candidates[0].url : null,
-                title: item.caption ? item.caption.text : 'Instagram Video'
-            };
-        }
-    } catch (error) {
-        console.log('Alternative API failed:', error);
-    }
-    
-    return null;
-}
-
-function extractInstagramId(url) {
-    // Simple Instagram ID extraction (for demo purposes)
-    const match = url.match(/\/(p|reel|tv)\/([^\/?]+)/);
-    return match ? match[2] : null;
-}
 </script>
 </body>
     </html>
