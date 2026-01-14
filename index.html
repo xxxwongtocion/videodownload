@@ -6,49 +6,53 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-    body {
-        font-family: Arial, sans-serif;
-        background: #0f0f0f;
-        color: #fff;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-    }
-    .box {
-        background: #1c1c1c;
-        padding: 20px;
-        border-radius: 10px;
-        width: 100%;
-        max-width: 400px;
-        text-align: center;
-    }
-    input {
-        width: 100%;
-        padding: 10px;
-        border-radius: 6px;
-        border: none;
-        margin-bottom: 10px;
-    }
-    button {
-        width: 100%;
-        padding: 10px;
-        background: #ff0050;
-        border: none;
-        color: #fff;
-        font-size: 16px;
-        border-radius: 6px;
-        cursor: pointer;
-    }
-    a {
-        display: none;
-        margin-top: 15px;
-        padding: 10px;
-        background: #00c853;
-        color: #fff;
-        text-decoration: none;
-        border-radius: 6px;
-    }
+body {
+    background:#0f0f0f;
+    color:#fff;
+    font-family:Arial, sans-serif;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+.box {
+    background:#1c1c1c;
+    padding:20px;
+    border-radius:10px;
+    width:100%;
+    max-width:420px;
+    text-align:center;
+}
+input {
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:6px;
+    margin-bottom:12px;
+}
+button {
+    width:100%;
+    padding:12px;
+    background:#ff0050;
+    color:#fff;
+    border:none;
+    border-radius:6px;
+    font-size:16px;
+    cursor:pointer;
+}
+a {
+    display:none;
+    margin-top:15px;
+    padding:12px;
+    background:#00c853;
+    color:#fff;
+    text-decoration:none;
+    border-radius:6px;
+}
+.loader {
+    display:none;
+    margin-top:10px;
+}
 </style>
 </head>
 
@@ -56,9 +60,11 @@
 <div class="box">
     <h2>TikTok Downloader</h2>
 
-    <input type="text" id="url" placeholder="Paste TikTok Video Link">
+    <input id="url" placeholder="Paste TikTok video link">
 
     <button onclick="download()">Download</button>
+
+    <div class="loader" id="loader">Loading...</div>
 
     <a id="downloadLink" target="_blank">Download Video</a>
 </div>
@@ -68,22 +74,26 @@ async function download() {
     const url = document.getElementById("url").value;
     if (!url) return alert("Weka TikTok link");
 
-    const api = `https://api.tiklydown.me/api/download?url=${encodeURIComponent(url)}`;
+    document.getElementById("loader").style.display = "block";
+    document.getElementById("downloadLink").style.display = "none";
 
     try {
+        const api = "https://www.tikwm.com/api/?url=" + encodeURIComponent(url);
         const res = await fetch(api);
         const data = await res.json();
 
-        if (!data.video || !data.video.noWatermark) {
-            alert("Imeshindikana kupakua video");
+        if (!data || !data.data || !data.data.play) {
+            alert("Video haipatikani");
             return;
         }
 
         const link = document.getElementById("downloadLink");
-        link.href = data.video.noWatermark;
+        link.href = data.data.play;
         link.style.display = "block";
     } catch (e) {
-        alert("Error: API haipatikani");
+        alert("API error");
+    } finally {
+        document.getElementById("loader").style.display = "none";
     }
 }
 </script>
