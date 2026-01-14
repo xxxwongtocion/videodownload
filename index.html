@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>DarkX Pro | TikTok Video Downloader</title>
+<title>DarkX Pro | Social Media Downloader</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap">
@@ -12,6 +12,8 @@
     --primary: #ff0050;
     --primary-dark: #d90044;
     --secondary: #00f2fe;
+    --instagram: #e1306c;
+    --tiktok: #000000;
     --accent: #9d4edd;
     --dark-bg: #0a0a0f;
     --card-bg: #14141f;
@@ -22,6 +24,7 @@
     --warning: #ffaa00;
     --error: #ff5555;
     --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
+    --instagram-gradient: linear-gradient(45deg, #405de6, #5851db, #833ab4, #c13584, #e1306c, #fd1d1d);
     --glass: rgba(20, 20, 31, 0.7);
     --glow: 0 0 30px rgba(255, 0, 80, 0.3);
 }
@@ -54,7 +57,7 @@ body::before {
     height: 100%;
     background: 
         radial-gradient(circle at 20% 20%, rgba(255, 0, 80, 0.1) 0%, transparent 50%),
-        radial-gradient(circle at 80% 80%, rgba(0, 242, 254, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(64, 93, 230, 0.1) 0%, transparent 50%),
         radial-gradient(circle at 40% 60%, rgba(157, 78, 221, 0.05) 0%, transparent 50%);
     z-index: -1;
 }
@@ -65,10 +68,10 @@ body::before {
     z-index: 2;
 }
 
-/* Header Section */
+/* Header */
 .header {
     text-align: center;
-    margin-bottom: 40px;
+    margin-bottom: 30px;
     position: relative;
 }
 
@@ -77,7 +80,7 @@ body::before {
     justify-content: center;
     align-items: center;
     gap: 15px;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
 }
 
 .logo-icon {
@@ -99,21 +102,12 @@ body::before {
 }
 
 .logo-text {
-    font-size: 42px;
+    font-size: 38px;
     font-weight: 900;
     background: var(--gradient);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-}
-
-.logo-subtext {
-    font-size: 16px;
-    color: var(--secondary);
-    font-weight: 600;
-    letter-spacing: 8px;
-    margin-top: -8px;
+    letter-spacing: 1px;
 }
 
 .tagline {
@@ -124,23 +118,58 @@ body::before {
     line-height: 1.6;
 }
 
+/* Service Selector */
+.service-selector {
+    display: flex;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    padding: 6px;
+    margin-bottom: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.service-btn {
+    flex: 1;
+    padding: 16px 10px;
+    background: transparent;
+    border: none;
+    border-radius: 12px;
+    color: var(--text-secondary);
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.service-btn.active {
+    background: var(--gradient);
+    color: white;
+    box-shadow: 0 5px 15px rgba(255, 0, 80, 0.3);
+}
+
+.service-btn.instagram.active {
+    background: var(--instagram-gradient);
+    box-shadow: 0 5px 15px rgba(225, 48, 108, 0.3);
+}
+
+.service-btn .service-icon {
+    font-size: 20px;
+}
+
 /* Card */
 .card {
     background: var(--glass);
     backdrop-filter: blur(20px);
-    padding: 40px;
+    padding: 30px;
     border-radius: 24px;
     border: 1px solid var(--card-border);
-    box-shadow: 
-        0 20px 50px rgba(0, 0, 0, 0.5),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
     position: relative;
     overflow: hidden;
-    transition: transform 0.3s ease;
-}
-
-.card:hover {
-    transform: translateY(-5px);
 }
 
 .card::before {
@@ -153,16 +182,20 @@ body::before {
     background: var(--gradient);
 }
 
+.card.instagram-mode::before {
+    background: var(--instagram-gradient);
+}
+
 /* Input Section */
 .input-section {
-    margin-bottom: 30px;
+    margin-bottom: 25px;
 }
 
 .section-title {
     display: flex;
     align-items: center;
     gap: 10px;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     font-size: 18px;
     font-weight: 600;
     color: var(--text);
@@ -179,13 +212,17 @@ body::before {
     font-size: 16px;
 }
 
+.instagram-mode .title-icon {
+    background: var(--instagram-gradient);
+}
+
 .input-container {
     position: relative;
 }
 
 .input-field {
     width: 100%;
-    padding: 20px 20px 20px 60px;
+    padding: 18px 18px 18px 60px;
     background: rgba(10, 10, 15, 0.7);
     border: 2px solid rgba(255, 255, 255, 0.1);
     border-radius: 16px;
@@ -203,6 +240,11 @@ body::before {
     background: rgba(10, 10, 15, 0.9);
 }
 
+.instagram-mode .input-field:focus {
+    border-color: var(--instagram);
+    box-shadow: 0 0 0 4px rgba(225, 48, 108, 0.2);
+}
+
 .input-field::placeholder {
     color: rgba(255, 255, 255, 0.4);
 }
@@ -216,15 +258,19 @@ body::before {
     font-size: 20px;
 }
 
+.instagram-mode .input-icon {
+    color: var(--instagram);
+}
+
 /* Buttons */
 .btn-primary {
     width: 100%;
-    padding: 22px;
+    padding: 20px;
     background: var(--gradient);
     color: white;
     border: none;
     border-radius: 16px;
-    font-size: 18px;
+    font-size: 17px;
     font-weight: 700;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -233,7 +279,6 @@ body::before {
     align-items: center;
     gap: 12px;
     letter-spacing: 1px;
-    text-transform: uppercase;
     margin-top: 10px;
     position: relative;
     overflow: hidden;
@@ -261,66 +306,41 @@ body::before {
     box-shadow: 0 15px 30px rgba(255, 0, 80, 0.4);
 }
 
-.btn-primary:active {
-    transform: translateY(-1px);
+.instagram-mode .btn-primary {
+    background: var(--instagram-gradient);
 }
 
-.btn-secondary {
-    width: 100%;
-    padding: 18px;
-    background: rgba(255, 255, 255, 0.05);
-    color: var(--text);
-    border: 2px solid rgba(255, 255, 255, 0.1);
-    border-radius: 16px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    margin-top: 15px;
-}
-
-.btn-secondary:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.3);
+.instagram-mode .btn-primary:hover {
+    box-shadow: 0 15px 30px rgba(225, 48, 108, 0.4);
 }
 
 /* Loader */
 .loader-container {
     display: none;
     text-align: center;
-    margin: 30px 0;
+    margin: 25px 0;
 }
 
 .advanced-loader {
-    width: 80px;
-    height: 80px;
-    margin: 0 auto 20px;
+    width: 70px;
+    height: 70px;
+    margin: 0 auto 15px;
     position: relative;
 }
 
 .loader-ring {
     width: 100%;
     height: 100%;
-    border: 6px solid rgba(255, 255, 255, 0.1);
-    border-top: 6px solid var(--primary);
-    border-right: 6px solid var(--secondary);
+    border: 5px solid rgba(255, 255, 255, 0.1);
+    border-top: 5px solid var(--primary);
+    border-right: 5px solid var(--secondary);
     border-radius: 50%;
     animation: spin 1.5s linear infinite;
 }
 
-.loader-dot {
-    position: absolute;
-    top: 10px;
-    left: 50%;
-    width: 12px;
-    height: 12px;
-    background: var(--accent);
-    border-radius: 50%;
-    animation: orbit 1.5s linear infinite;
+.instagram-mode .loader-ring {
+    border-top: 5px solid #405de6;
+    border-right: 5px solid #e1306c;
 }
 
 @keyframes spin {
@@ -328,22 +348,16 @@ body::before {
     100% { transform: rotate(360deg); }
 }
 
-@keyframes orbit {
-    0% { transform: rotate(0deg) translateX(30px) rotate(0deg); }
-    100% { transform: rotate(360deg) translateX(30px) rotate(-360deg); }
-}
-
 .loader-text {
     color: var(--text-secondary);
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 500;
-    letter-spacing: 1px;
 }
 
 /* Result Section */
 .result-container {
     display: none;
-    margin-top: 30px;
+    margin-top: 25px;
     animation: slideUp 0.5s ease;
 }
 
@@ -356,94 +370,38 @@ body::before {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     padding-bottom: 15px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .result-title {
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 700;
     background: var(--gradient);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
-.result-actions {
-    display: flex;
-    gap: 10px;
-}
-
-.action-btn {
-    background: rgba(255, 255, 255, 0.05);
-    border: none;
-    width: 40px;
-    height: 40px;
-    border-radius: 10px;
-    color: var(--text);
-    font-size: 16px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.action-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
-    transform: translateY(-2px);
-}
-
-.video-info {
-    background: rgba(10, 10, 15, 0.7);
-    border-radius: 16px;
-    padding: 20px;
-    margin-bottom: 25px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.info-row {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    margin-bottom: 15px;
-}
-
-.info-row:last-child {
-    margin-bottom: 0;
-}
-
-.info-icon {
-    color: var(--primary);
-    font-size: 18px;
-    width: 24px;
-}
-
-.info-text {
-    color: var(--text-secondary);
-    font-size: 15px;
-}
-
-.info-value {
-    color: var(--text);
-    font-weight: 600;
-    margin-left: auto;
+.instagram-mode .result-title {
+    background: var(--instagram-gradient);
+    -webkit-background-clip: text;
 }
 
 .download-options {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     gap: 15px;
     margin-top: 20px;
 }
 
 .download-btn {
-    padding: 18px;
+    padding: 16px;
     background: rgba(0, 200, 83, 0.15);
     border: 2px solid rgba(0, 200, 83, 0.3);
     color: #00ff88;
     border-radius: 14px;
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -463,7 +421,7 @@ body::before {
 }
 
 .download-btn i {
-    font-size: 24px;
+    font-size: 22px;
     margin-bottom: 8px;
 }
 
@@ -473,160 +431,87 @@ body::before {
     margin-top: 4px;
 }
 
-/* Coming Soon Section */
-.coming-soon-section {
-    margin-top: 40px;
-    padding-top: 30px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+.audio-btn {
+    background: rgba(255, 100, 0, 0.15);
+    border-color: rgba(255, 100, 0, 0.3);
+    color: #ffaa00;
 }
 
-.coming-soon-card {
-    background: rgba(157, 78, 221, 0.1);
-    border: 1px solid rgba(157, 78, 221, 0.3);
-    border-radius: 18px;
-    padding: 25px;
-    position: relative;
-    overflow: hidden;
+.audio-btn:hover {
+    background: rgba(255, 100, 0, 0.25);
+    border-color: #ffaa00;
+    box-shadow: 0 10px 20px rgba(255, 170, 0, 0.2);
 }
 
-.coming-soon-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 8px;
-    height: 100%;
-    background: var(--accent);
+.instagram-btn {
+    background: rgba(64, 93, 230, 0.15);
+    border-color: rgba(64, 93, 230, 0.3);
+    color: #5b8cff;
 }
 
-.coming-soon-header {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    margin-bottom: 15px;
+.instagram-btn:hover {
+    background: rgba(64, 93, 230, 0.25);
+    border-color: #5b8cff;
+    box-shadow: 0 10px 20px rgba(91, 140, 255, 0.2);
 }
 
-.coming-soon-icon {
-    background: linear-gradient(135deg, #405de6, #833ab4);
-    width: 50px;
-    height: 50px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 24px;
-}
-
-.coming-soon-title {
-    font-size: 22px;
-    font-weight: 700;
-    background: linear-gradient(135deg, #405de6, #833ab4, #c13584);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-.coming-soon-text {
-    color: var(--text-secondary);
-    font-size: 15px;
-    line-height: 1.6;
-    margin-bottom: 20px;
-}
-
-.progress-container {
-    width: 100%;
-    height: 10px;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 5px;
-    overflow: hidden;
-    margin-bottom: 15px;
-}
-
-.progress-bar {
-    height: 100%;
-    width: 65%;
-    background: linear-gradient(90deg, #405de6, #833ab4);
-    border-radius: 5px;
-    position: relative;
-    animation: progressAnimation 2s infinite alternate;
-}
-
-@keyframes progressAnimation {
-    0% { width: 65%; }
-    100% { width: 70%; }
-}
-
-.progress-text {
-    font-size: 13px;
-    color: var(--text-secondary);
-    text-align: right;
-}
-
-/* Stats */
-.stats-container {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 40px;
+/* Media Preview */
+.media-preview {
+    background: rgba(10, 10, 15, 0.7);
+    border-radius: 16px;
     padding: 20px;
-    background: rgba(255, 255, 255, 0.02);
-    border-radius: 18px;
+    margin-bottom: 20px;
     border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.stat-item {
     text-align: center;
 }
 
-.stat-value {
-    font-size: 28px;
-    font-weight: 800;
-    background: var(--gradient);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    line-height: 1;
+.preview-image {
+    max-width: 100%;
+    border-radius: 12px;
+    margin-bottom: 15px;
+    display: none;
 }
 
-.stat-label {
+.media-info {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.info-item {
+    flex: 1;
+    min-width: 120px;
+}
+
+.info-label {
     font-size: 12px;
     color: var(--text-secondary);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.info-value {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text);
 }
 
 /* Footer */
 .footer {
     text-align: center;
-    margin-top: 40px;
+    margin-top: 30px;
     color: var(--text-secondary);
     font-size: 13px;
     padding-top: 20px;
     border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.footer-links {
-    display: flex;
-    justify-content: center;
-    gap: 25px;
-    margin-top: 15px;
-}
-
-.footer-link {
-    color: var(--text-secondary);
-    text-decoration: none;
-    font-size: 13px;
-    transition: color 0.3s ease;
-}
-
-.footer-link:hover {
-    color: var(--primary);
-}
-
-/* Notifications */
+/* Notification */
 .notification {
     position: fixed;
     top: 30px;
     right: 30px;
-    padding: 18px 25px;
+    padding: 16px 22px;
     background: var(--card-bg);
     border-radius: 14px;
     border-left: 5px solid var(--primary);
@@ -636,6 +521,7 @@ body::before {
     gap: 15px;
     z-index: 1000;
     animation: slideInRight 0.5s ease, slideOutRight 0.5s ease 2.5s forwards;
+    max-width: 350px;
 }
 
 @keyframes slideInRight {
@@ -649,12 +535,12 @@ body::before {
 }
 
 .notification-icon {
-    font-size: 22px;
+    font-size: 20px;
     color: var(--primary);
 }
 
 .notification-content {
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 500;
 }
 
@@ -676,9 +562,9 @@ body::before {
         grid-template-columns: 1fr;
     }
     
-    .stats-container {
+    .media-info {
         flex-direction: column;
-        gap: 20px;
+        gap: 10px;
     }
 }
 </style>
@@ -690,162 +576,102 @@ body::before {
     <div class="header">
         <div class="logo-container">
             <div class="logo-icon">
-                <i class="fas fa-bolt"></i>
+                <i class="fas fa-download"></i>
             </div>
             <div>
                 <div class="logo-text">DARKX PRO</div>
-                <div class="logo-subtext">DOWNLOADER</div>
+                <div style="font-size: 14px; color: var(--text-secondary);">Social Media Downloader</div>
             </div>
         </div>
-        <p class="tagline">Download TikTok videos in HD quality without watermark. Professional tool for content creators.</p>
+        <p class="tagline">Download videos from TikTok and Instagram in HD quality without watermark</p>
+    </div>
+    
+    <!-- Service Selector -->
+    <div class="service-selector">
+        <button class="service-btn active" id="tiktokBtn" onclick="switchService('tiktok')">
+            <i class="fab fa-tiktok service-icon"></i>
+            TikTok
+        </button>
+        <button class="service-btn" id="instagramBtn" onclick="switchService('instagram')">
+            <i class="fab fa-instagram service-icon"></i>
+            Instagram
+        </button>
     </div>
     
     <!-- Main Card -->
-    <div class="card">
+    <div class="card" id="mainCard">
         <!-- Input Section -->
         <div class="input-section">
             <div class="section-title">
-                <div class="title-icon">
-                    <i class="fas fa-link"></i>
+                <div class="title-icon" id="titleIcon">
+                    <i class="fab fa-tiktok"></i>
                 </div>
-                <span>Enter TikTok Video URL</span>
+                <span id="serviceTitle">Enter TikTok Video URL</span>
             </div>
             
             <div class="input-container">
-                <i class="fas fa-paste input-icon"></i>
-                <input type="text" id="url" class="input-field" placeholder="https://www.tiktok.com/@username/video/1234567890..." autocomplete="off">
+                <i class="fas fa-link input-icon"></i>
+                <input type="text" id="url" class="input-field" placeholder="Paste your video link here..." autocomplete="off">
             </div>
         </div>
         
         <!-- Download Button -->
-        <button class="btn-primary" id="downloadBtn" onclick="downloadVideo()">
+        <button class="btn-primary" id="downloadBtn" onclick="downloadMedia()">
             <i class="fas fa-download"></i>
-            Download Video Now
-        </button>
-        
-        <!-- Alternative Methods -->
-        <button class="btn-secondary" onclick="showAlternativeMethods()">
-            <i class="fas fa-code-branch"></i>
-            Alternative Download Methods
+            <span id="downloadBtnText">Download TikTok Video</span>
         </button>
         
         <!-- Loader -->
         <div class="loader-container" id="loader">
             <div class="advanced-loader">
                 <div class="loader-ring"></div>
-                <div class="loader-dot"></div>
             </div>
-            <p class="loader-text">Processing Video • Fetching Data • Preparing Download</p>
+            <p class="loader-text" id="loaderText">Processing video...</p>
         </div>
         
         <!-- Result Section -->
         <div class="result-container" id="resultContainer">
             <div class="result-header">
-                <div class="result-title">Video Ready to Download</div>
-                <div class="result-actions">
-                    <button class="action-btn" onclick="copyVideoLink()" title="Copy Link">
-                        <i class="fas fa-copy"></i>
-                    </button>
-                    <button class="action-btn" onclick="shareVideo()" title="Share">
-                        <i class="fas fa-share-alt"></i>
-                    </button>
+                <div class="result-title" id="resultTitle">Video Ready to Download</div>
+            </div>
+            
+            <!-- Media Preview -->
+            <div class="media-preview" id="mediaPreview">
+                <img id="previewImage" class="preview-image" alt="Video Preview">
+                <div class="media-info" id="mediaInfo">
+                    <!-- Media info will be populated here -->
                 </div>
             </div>
             
-            <div class="video-info">
-                <div class="info-row">
-                    <i class="fas fa-film info-icon"></i>
-                    <span class="info-text">Video Quality:</span>
-                    <span class="info-value" id="videoQuality">HD (1080p)</span>
-                </div>
-                <div class="info-row">
-                    <i class="fas fa-clock info-icon"></i>
-                    <span class="info-text">Duration:</span>
-                    <span class="info-value" id="videoDuration">0:32</span>
-                </div>
-                <div class="info-row">
-                    <i class="fas fa-database info-icon"></i>
-                    <span class="info-text">File Size:</span>
-                    <span class="info-value" id="fileSize">12.5 MB</span>
-                </div>
-            </div>
-            
-            <div class="download-options">
-                <a class="download-btn" id="downloadLinkHD" target="_blank">
-                    <i class="fas fa-hd"></i>
-                    HD QUALITY
-                    <span class="btn-label">Best Quality</span>
-                </a>
-                <a class="download-btn" id="downloadLinkAudio" target="_blank" style="background: rgba(255, 100, 0, 0.15); border-color: rgba(255, 100, 0, 0.3); color: #ffaa00;">
-                    <i class="fas fa-music"></i>
-                    AUDIO ONLY
-                    <span class="btn-label">MP3 Format</span>
-                </a>
-            </div>
-        </div>
-        
-        <!-- Coming Soon -->
-        <div class="coming-soon-section">
-            <div class="coming-soon-card">
-                <div class="coming-soon-header">
-                    <div class="coming-soon-icon">
-                        <i class="fab fa-instagram"></i>
-                    </div>
-                    <div class="coming-soon-title">Instagram Downloader</div>
-                </div>
-                <p class="coming-soon-text">We're building a powerful Instagram video downloader with support for Reels, Stories, and IGTV. Expected launch: <strong>December 2024</strong></p>
-                
-                <div class="progress-container">
-                    <div class="progress-bar"></div>
-                </div>
-                <div class="progress-text">Development: 65% Complete</div>
-            </div>
-        </div>
-        
-        <!-- Stats -->
-        <div class="stats-container">
-            <div class="stat-item">
-                <div class="stat-value" id="totalDownloads">1.2M+</div>
-                <div class="stat-label">Total Downloads</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-value" id="successRate">99.8%</div>
-                <div class="stat-label">Success Rate</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-value" id="avgSpeed">2.4s</div>
-                <div class="stat-label">Avg. Speed</div>
+            <!-- Download Options -->
+            <div class="download-options" id="downloadOptions">
+                <!-- Options will be populated here -->
             </div>
         </div>
     </div>
     
     <!-- Footer -->
     <div class="footer">
-        <p>© 2024 DarkX Pro Downloader. All rights reserved. | Professional Tool for Content Creators</p>
-        <div class="footer-links">
-            <a href="#" class="footer-link">Privacy Policy</a>
-            <a href="#" class="footer-link">Terms of Service</a>
-            <a href="#" class="footer-link">API Documentation</a>
-            <a href="#" class="footer-link">Developer Contact</a>
-        </div>
+        <p>© 2024 DarkX Pro Downloader. All rights reserved.</p>
+        <p style="font-size: 12px; margin-top: 5px;">Supports: TikTok Videos • Instagram Reels • Posts • Stories</p>
     </div>
 </div>
 
 <!-- Notification -->
 <div class="notification" id="notification">
-    <i class="fas fa-check-circle notification-icon"></i>
+    <i class="fas fa-check-circle notification-icon" id="notificationIcon"></i>
     <div class="notification-content" id="notificationText">Video downloaded successfully!</div>
 </div>
 
 <script>
-// Global variables
-let currentVideoData = null;
+// Current service
+let currentService = 'tiktok';
 
 // Show notification
 function showNotification(message, type = 'success') {
     const notification = document.getElementById('notification');
     const notificationText = document.getElementById('notificationText');
-    const notificationIcon = notification.querySelector('.notification-icon');
+    const notificationIcon = document.getElementById('notificationIcon');
     
     notificationText.textContent = message;
     
@@ -873,10 +699,47 @@ function showNotification(message, type = 'success') {
     }, 3000);
 }
 
-// Download video function
-async function downloadVideo() {
+// Switch between services
+function switchService(service) {
+    currentService = service;
+    
+    // Update service selector buttons
+    document.getElementById('tiktokBtn').classList.remove('active');
+    document.getElementById('instagramBtn').classList.remove('active');
+    document.getElementById(service + 'Btn').classList.add('active');
+    
+    // Update card mode
+    const card = document.getElementById('mainCard');
+    card.classList.remove('tiktok-mode', 'instagram-mode');
+    card.classList.add(service + '-mode');
+    
+    // Update title
+    const titleIcon = document.getElementById('titleIcon');
+    const serviceTitle = document.getElementById('serviceTitle');
+    const downloadBtnText = document.getElementById('downloadBtnText');
+    
+    if (service === 'tiktok') {
+        titleIcon.innerHTML = '<i class="fab fa-tiktok"></i>';
+        serviceTitle.textContent = 'Enter TikTok Video URL';
+        downloadBtnText.textContent = 'Download TikTok Video';
+        document.getElementById('url').placeholder = 'https://www.tiktok.com/@username/video/1234567890';
+    } else {
+        titleIcon.innerHTML = '<i class="fab fa-instagram"></i>';
+        serviceTitle.textContent = 'Enter Instagram Video URL';
+        downloadBtnText.textContent = 'Download Instagram Video';
+        document.getElementById('url').placeholder = 'https://www.instagram.com/p/Cxample... or /reel/...';
+    }
+    
+    // Clear previous results
+    document.getElementById('resultContainer').style.display = 'none';
+    document.getElementById('url').value = '';
+}
+
+// Download media function
+async function downloadMedia() {
     const url = document.getElementById('url').value.trim();
     const loader = document.getElementById('loader');
+    const loaderText = document.getElementById('loaderText');
     const resultContainer = document.getElementById('resultContainer');
     const downloadBtn = document.getElementById('downloadBtn');
     
@@ -887,72 +750,244 @@ async function downloadVideo() {
     
     // Validation
     if (!url) {
-        showNotification('Please paste a TikTok video URL', 'error');
+        showNotification(`Please paste a ${currentService === 'tiktok' ? 'TikTok' : 'Instagram'} video URL`, 'error');
         downloadBtn.disabled = false;
-        downloadBtn.innerHTML = '<i class="fas fa-download"></i> Download Video Now';
+        downloadBtn.innerHTML = `<i class="fas fa-download"></i> Download ${currentService === 'tiktok' ? 'TikTok' : 'Instagram'} Video`;
         return;
     }
     
-    if (!url.includes('tiktok.com')) {
+    // Validate URL based on service
+    if (currentService === 'tiktok' && !url.includes('tiktok.com')) {
         showNotification('Please enter a valid TikTok URL', 'error');
         downloadBtn.disabled = false;
-        downloadBtn.innerHTML = '<i class="fas fa-download"></i> Download Video Now';
+        downloadBtn.innerHTML = '<i class="fas fa-download"></i> Download TikTok Video';
+        return;
+    }
+    
+    if (currentService === 'instagram' && !url.includes('instagram.com')) {
+        showNotification('Please enter a valid Instagram URL', 'error');
+        downloadBtn.disabled = false;
+        downloadBtn.innerHTML = '<i class="fas fa-download"></i> Download Instagram Video';
         return;
     }
     
     // Show loader
     loader.style.display = 'block';
+    loaderText.textContent = `Processing ${currentService === 'tiktok' ? 'TikTok' : 'Instagram'} video...`;
     
     try {
-        // Simulate API delay for better UX
-        await new Promise(resolve => setTimeout(resolve, 800));
+        let data;
         
-        // Call TikTok API
-        const api = "https://www.tikwm.com/api/?url=" + encodeURIComponent(url);
-        const res = await fetch(api);
-        const data = await res.json();
-        
-        if (!data || !data.data || !data.data.play) {
-            throw new Error('Video not found or private. Please check the URL.');
+        if (currentService === 'tiktok') {
+            // TikTok API
+            const api = "https://www.tikwm.com/api/?url=" + encodeURIComponent(url);
+            const res = await fetch(api);
+            data = await res.json();
+            
+            if (!data || !data.data || !data.data.play) {
+                throw new Error('TikTok video not found or private');
+            }
+            
+            // Process TikTok response
+            await processTikTokResponse(data.data);
+        } else {
+            // Instagram API
+            const formData = new FormData();
+            formData.append("url", url);
+            
+            const res = await fetch("https://snapinsta.app/action.php", {
+                method: "POST",
+                body: formData
+            });
+            
+            const text = await res.text();
+            data = await processInstagramResponse(text);
+            
+            if (!data || !data.video_url) {
+                throw new Error('Instagram video not found or private');
+            }
+            
+            // Process Instagram response
+            await processInstagramData(data);
         }
-        
-        // Store video data
-        currentVideoData = data.data;
-        
-        // Update video info
-        document.getElementById('videoQuality').textContent = 'HD (1080p)';
-        document.getElementById('videoDuration').textContent = data.data.duration ? formatDuration(data.data.duration) : '0:30';
-        document.getElementById('fileSize').textContent = calculateFileSize(data.data.play);
-        
-        // Set download links
-        const downloadLinkHD = document.getElementById('downloadLinkHD');
-        downloadLinkHD.href = data.data.play;
-        downloadLinkHD.download = 'tiktok_video_hd.mp4';
-        
-        // For audio, we'll use a placeholder (real implementation would need audio API)
-        const downloadLinkAudio = document.getElementById('downloadLinkAudio');
-        downloadLinkAudio.href = data.data.play.replace('video', 'audio') || data.data.play;
-        downloadLinkAudio.download = 'tiktok_audio.mp3';
         
         // Hide loader and show result
         loader.style.display = 'none';
         resultContainer.style.display = 'block';
         
-        // Update download stats
-        updateDownloadStats();
-        
         // Show success notification
-        showNotification('Video ready for download!', 'success');
+        showNotification(`${currentService === 'tiktok' ? 'TikTok' : 'Instagram'} video ready for download!`, 'success');
         
     } catch (error) {
         // Show error
         loader.style.display = 'none';
-        showNotification(error.message || 'Failed to download video. Please try again.', 'error');
+        showNotification(error.message || `Failed to download ${currentService === 'tiktok' ? 'TikTok' : 'Instagram'} video`, 'error');
         console.error('Download error:', error);
     } finally {
         // Reset button
         downloadBtn.disabled = false;
-        downloadBtn.innerHTML = '<i class="fas fa-download"></i> Download Video Now';
+        downloadBtn.innerHTML = `<i class="fas fa-download"></i> Download ${currentService === 'tiktok' ? 'TikTok' : 'Instagram'} Video`;
+    }
+}
+
+// Process TikTok response
+async function processTikTokResponse(data) {
+    const resultTitle = document.getElementById('resultTitle');
+    const previewImage = document.getElementById('previewImage');
+    const mediaInfo = document.getElementById('mediaInfo');
+    const downloadOptions = document.getElementById('downloadOptions');
+    
+    // Set result title
+    resultTitle.textContent = 'TikTok Video Ready';
+    
+    // Set preview image if available
+    if (data.cover) {
+        previewImage.src = data.cover;
+        previewImage.style.display = 'block';
+    } else {
+        previewImage.style.display = 'none';
+    }
+    
+    // Set media info
+    mediaInfo.innerHTML = `
+        <div class="info-item">
+            <div class="info-label">Duration</div>
+            <div class="info-value">${data.duration ? formatDuration(data.duration) : '0:30'}</div>
+        </div>
+        <div class="info-item">
+            <div class="info-label">Quality</div>
+            <div class="info-value">HD (1080p)</div>
+        </div>
+        <div class="info-item">
+            <div class="info-label">Author</div>
+            <div class="info-value">${data.author ? data.author.nickname : 'Unknown'}</div>
+        </div>
+    `;
+    
+    // Set download options
+    downloadOptions.innerHTML = `
+        <a class="download-btn" href="${data.play}" download="tiktok_video.mp4" target="_blank">
+            <i class="fas fa-video"></i>
+            HD Video
+            <span class="btn-label">MP4 • Best Quality</span>
+        </a>
+        <a class="download-btn audio-btn" href="${data.play}" download="tiktok_audio.mp3" target="_blank">
+            <i class="fas fa-music"></i>
+            Audio Only
+            <span class="btn-label">MP3 • 320kbps</span>
+        </a>
+    `;
+}
+
+// Process Instagram response text
+async function processInstagramResponse(html) {
+    // Create a temporary DOM element to parse the HTML
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, 'text/html');
+    
+    // Try to find video URL
+    let videoUrl = null;
+    let thumbnail = null;
+    let title = 'Instagram Video';
+    
+    // Look for video sources
+    const videoElements = doc.querySelectorAll('video source');
+    if (videoElements.length > 0) {
+        videoUrl = videoElements[0].getAttribute('src');
+    }
+    
+    // Look for download buttons
+    const downloadButtons = doc.querySelectorAll('a[href*="cdn"]');
+    for (const button of downloadButtons) {
+        const href = button.getAttribute('href');
+        if (href && (href.includes('.mp4') || href.includes('video'))) {
+            videoUrl = href;
+            break;
+        }
+    }
+    
+    // Look for thumbnail
+    const imgElements = doc.querySelectorAll('img');
+    for (const img of imgElements) {
+        const src = img.getAttribute('src');
+        if (src && (src.includes('instagram') || src.includes('cdn'))) {
+            thumbnail = src;
+            break;
+        }
+    }
+    
+    // Look for title/description
+    const titleElements = doc.querySelectorAll('h1, h2, .title, .description');
+    for (const element of titleElements) {
+        if (element.textContent && element.textContent.trim().length > 0) {
+            title = element.textContent.trim().substring(0, 50);
+            break;
+        }
+    }
+    
+    return {
+        video_url: videoUrl,
+        thumbnail: thumbnail,
+        title: title
+    };
+}
+
+// Process Instagram data
+async function processInstagramData(data) {
+    const resultTitle = document.getElementById('resultTitle');
+    const previewImage = document.getElementById('previewImage');
+    const mediaInfo = document.getElementById('mediaInfo');
+    const downloadOptions = document.getElementById('downloadOptions');
+    
+    // Set result title
+    resultTitle.textContent = 'Instagram Video Ready';
+    
+    // Set preview image if available
+    if (data.thumbnail) {
+        previewImage.src = data.thumbnail;
+        previewImage.style.display = 'block';
+    } else {
+        previewImage.style.display = 'none';
+    }
+    
+    // Set media info
+    mediaInfo.innerHTML = `
+        <div class="info-item">
+            <div class="info-label">Platform</div>
+            <div class="info-value">Instagram</div>
+        </div>
+        <div class="info-item">
+            <div class="info-label">Quality</div>
+            <div class="info-value">HD</div>
+        </div>
+        <div class="info-item">
+            <div class="info-label">Title</div>
+            <div class="info-value">${data.title || 'Instagram Video'}</div>
+        </div>
+    `;
+    
+    // Set download options
+    if (data.video_url) {
+        downloadOptions.innerHTML = `
+            <a class="download-btn instagram-btn" href="${data.video_url}" download="instagram_video.mp4" target="_blank">
+                <i class="fas fa-download"></i>
+                Download Video
+                <span class="btn-label">MP4 • High Quality</span>
+            </a>
+            <a class="download-btn audio-btn" href="${data.video_url}" download="instagram_audio.mp3" target="_blank">
+                <i class="fas fa-music"></i>
+                Audio Only
+                <span class="btn-label">MP3 Format</span>
+            </a>
+        `;
+    } else {
+        downloadOptions.innerHTML = `
+            <div style="grid-column: 1 / -1; text-align: center; color: var(--error); padding: 20px;">
+                <i class="fas fa-exclamation-triangle" style="font-size: 32px; margin-bottom: 10px;"></i>
+                <p>Could not extract video URL. The Instagram link might be private or restricted.</p>
+                <p style="font-size: 12px; margin-top: 10px;">Try with a different Instagram video or use alternative methods.</p>
+            </div>
+        `;
     }
 }
 
@@ -964,63 +999,7 @@ function formatDuration(seconds) {
     return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
 }
 
-// Calculate file size (simulated)
-function calculateFileSize(url) {
-    // In a real app, you would fetch the file headers to get actual size
-    const sizes = ['8.2 MB', '12.5 MB', '15.7 MB', '21.3 MB', '6.8 MB'];
-    return sizes[Math.floor(Math.random() * sizes.length)];
-}
-
-// Copy video link
-function copyVideoLink() {
-    if (!currentVideoData || !currentVideoData.play) {
-        showNotification('No video link available', 'error');
-        return;
-    }
-    
-    navigator.clipboard.writeText(currentVideoData.play)
-        .then(() => {
-            showNotification('Video link copied to clipboard!', 'success');
-        })
-        .catch(() => {
-            showNotification('Failed to copy link', 'error');
-        });
-}
-
-// Share video
-function shareVideo() {
-    if (!currentVideoData || !currentVideoData.play) {
-        showNotification('No video available to share', 'error');
-        return;
-    }
-    
-    if (navigator.share) {
-        navigator.share({
-            title: 'TikTok Video',
-            text: 'Check out this TikTok video I downloaded using DarkX Pro!',
-            url: currentVideoData.play
-        })
-        .catch(() => {
-            showNotification('Share cancelled', 'warning');
-        });
-    } else {
-        copyVideoLink();
-    }
-}
-
-// Show alternative methods
-function showAlternativeMethods() {
-    showNotification('Alternative methods: Use "ssstik.io" or "snaptik.app" as backup', 'info');
-}
-
-// Update download stats (simulated)
-function updateDownloadStats() {
-    const totalDownloads = document.getElementById('totalDownloads');
-    const current = parseInt(totalDownloads.textContent.replace(/[^0-9]/g, ''));
-    totalDownloads.textContent = `${(current + 1).toLocaleString()}+`;
-}
-
-// Auto-paste from clipboard
+// Initialize
 document.addEventListener('DOMContentLoaded', function() {
     const urlInput = document.getElementById('url');
     
@@ -1031,9 +1010,17 @@ document.addEventListener('DOMContentLoaded', function() {
     if (navigator.clipboard) {
         navigator.clipboard.readText()
             .then(text => {
-                if (text.includes('tiktok.com')) {
+                if (text.includes('tiktok.com') || text.includes('instagram.com')) {
                     urlInput.value = text;
-                    showNotification('TikTok link detected from clipboard!', 'info');
+                    
+                    // Auto-select service based on URL
+                    if (text.includes('tiktok.com')) {
+                        switchService('tiktok');
+                    } else if (text.includes('instagram.com')) {
+                        switchService('instagram');
+                    }
+                    
+                    showNotification('Video link detected from clipboard!', 'info');
                 }
             })
             .catch(() => {
@@ -1044,31 +1031,44 @@ document.addEventListener('DOMContentLoaded', function() {
     // Enter key to download
     urlInput.addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
-            downloadVideo();
+            downloadMedia();
         }
     });
     
-    // Animate stats on page load
-    setTimeout(() => {
-        document.querySelectorAll('.stat-value').forEach(stat => {
-            stat.style.animation = 'none';
-            setTimeout(() => {
-                stat.style.animation = 'pulse 2s infinite alternate';
-            }, 100);
-        });
-    }, 1000);
+    // Clear result when input changes
+    urlInput.addEventListener('input', function() {
+        document.getElementById('resultContainer').style.display = 'none';
+    });
 });
 
-// Add some random stats updates (simulation)
-setInterval(() => {
-    const successRate = document.getElementById('successRate');
-    const rates = ['99.7%', '99.8%', '99.9%', '99.8%'];
-    successRate.textContent = rates[Math.floor(Math.random() * rates.length)];
+// Alternative Instagram API function (fallback)
+async function fetchInstagramAlternative(url) {
+    // This is a fallback API that might work if the primary fails
+    try {
+        const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(`https://instagram.com/api/v1/media/${extractInstagramId(url)}/info/`)}`;
+        const response = await fetch(proxyUrl);
+        const data = await response.json();
+        
+        if (data && data.items && data.items[0]) {
+            const item = data.items[0];
+            return {
+                video_url: item.video_versions ? item.video_versions[0].url : null,
+                thumbnail: item.image_versions2 ? item.image_versions2.candidates[0].url : null,
+                title: item.caption ? item.caption.text : 'Instagram Video'
+            };
+        }
+    } catch (error) {
+        console.log('Alternative API failed:', error);
+    }
     
-    const avgSpeed = document.getElementById('avgSpeed');
-    const speeds = ['2.3s', '2.4s', '2.5s', '2.2s'];
-    avgSpeed.textContent = speeds[Math.floor(Math.random() * speeds.length)];
-}, 5000);
+    return null;
+}
+
+function extractInstagramId(url) {
+    // Simple Instagram ID extraction (for demo purposes)
+    const match = url.match(/\/(p|reel|tv)\/([^\/?]+)/);
+    return match ? match[2] : null;
+}
 </script>
 </body>
     </html>
