@@ -7,6 +7,12 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap">
 
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-analytics-compat.js"></script>
+
 <style>
 :root {
     --primary: #ff0050;
@@ -62,59 +68,240 @@ body::before {
     z-index: -1;
 }
 
-.container {
+/* Login Page Styles */
+.login-container {
+    display: none;
     width: 100%;
-    max-width: 520px;
+    max-width: 400px;
     z-index: 2;
 }
 
-/* Header */
-.header {
+.login-card {
+    background: var(--glass);
+    backdrop-filter: blur(20px);
+    padding: 40px 30px;
+    border-radius: 24px;
+    border: 1px solid var(--card-border);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
     text-align: center;
-    margin-bottom: 30px;
     position: relative;
+    overflow: hidden;
 }
 
-.logo-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 15px;
-    margin-bottom: 10px;
-}
-
-.logo-icon {
+.login-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
     background: var(--gradient);
-    width: 60px;
-    height: 60px;
-    border-radius: 16px;
+}
+
+.login-icon {
+    background: var(--gradient);
+    width: 80px;
+    height: 80px;
+    border-radius: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 28px;
+    font-size: 36px;
+    margin: 0 auto 20px;
     box-shadow: var(--glow);
-    animation: pulse 2s infinite alternate;
 }
 
-@keyframes pulse {
-    0% { transform: scale(1); box-shadow: var(--glow); }
-    100% { transform: scale(1.05); box-shadow: 0 0 40px rgba(255, 0, 80, 0.5); }
-}
-
-.logo-text {
-    font-size: 38px;
+.login-title {
+    font-size: 32px;
     font-weight: 900;
     background: var(--gradient);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    letter-spacing: 1px;
+    margin-bottom: 10px;
+}
+
+.login-subtitle {
+    color: var(--text-secondary);
+    margin-bottom: 30px;
+    font-size: 14px;
+}
+
+.input-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--text-secondary);
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 16px;
+    background: rgba(10, 10, 15, 0.7);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    color: var(--text);
+    font-size: 15px;
+    font-family: 'Poppins', sans-serif;
+    transition: all 0.3s ease;
+}
+
+.input-group input:focus {
+    outline: none;
+    border-color: var(--primary);
+    background: rgba(10, 10, 15, 0.9);
+}
+
+.auth-btn {
+    width: 100%;
+    padding: 16px;
+    background: var(--gradient);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+}
+
+.auth-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(255, 0, 80, 0.3);
+}
+
+.auth-toggle {
+    color: var(--text-secondary);
+    font-size: 14px;
+    margin-top: 20px;
+}
+
+.auth-toggle a {
+    color: var(--secondary);
+    text-decoration: none;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.auth-toggle a:hover {
+    text-decoration: underline;
+}
+
+/* Main Container */
+.container {
+    display: none;
+    width: 100%;
+    max-width: 1200px;
+    z-index: 2;
+}
+
+/* Header with User Info */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding: 20px;
+    background: var(--glass);
+    border-radius: 20px;
+    border: 1px solid var(--card-border);
+}
+
+.logo-section {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.logo-icon {
+    background: var(--gradient);
+    width: 50px;
+    height: 50px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    box-shadow: var(--glow);
+}
+
+.logo-text {
+    font-size: 28px;
+    font-weight: 900;
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.user-section {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.user-info {
+    text-align: right;
+}
+
+.user-name {
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.user-email {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.user-avatar {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: var(--gradient);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.logout-btn {
+    padding: 8px 16px;
+    background: rgba(255, 0, 80, 0.2);
+    border: 1px solid var(--primary);
+    color: var(--text);
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.logout-btn:hover {
+    background: var(--primary);
+}
+
+/* Main Content Layout */
+.main-content {
+    display: grid;
+    grid-template-columns: 1fr 350px;
+    gap: 30px;
+}
+
+/* Downloader Section */
+.downloader-section {
+    margin-bottom: 30px;
 }
 
 .tagline {
     color: var(--text-secondary);
     font-size: 14px;
-    max-width: 400px;
-    margin: 0 auto;
+    margin-bottom: 20px;
     line-height: 1.6;
 }
 
@@ -497,6 +684,216 @@ body::before {
     color: var(--text);
 }
 
+/* Comments Section */
+.comments-section {
+    background: var(--glass);
+    backdrop-filter: blur(20px);
+    border-radius: 24px;
+    border: 1px solid var(--card-border);
+    padding: 25px;
+    height: fit-content;
+}
+
+.comments-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.comments-title i {
+    color: var(--primary);
+}
+
+.comments-form {
+    margin-bottom: 25px;
+}
+
+.comment-input {
+    width: 100%;
+    padding: 15px;
+    background: rgba(10, 10, 15, 0.7);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    color: var(--text);
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    resize: vertical;
+    min-height: 80px;
+    margin-bottom: 15px;
+}
+
+.comment-input:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+.comment-submit {
+    width: 100%;
+    padding: 12px;
+    background: var(--gradient);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.comment-submit:hover {
+    transform: translateY(-2px);
+}
+
+.comments-list {
+    max-height: 400px;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+.comments-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.comments-list::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+}
+
+.comments-list::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: 10px;
+}
+
+.comment-item {
+    background: rgba(10, 10, 15, 0.5);
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-left: 3px solid var(--primary);
+}
+
+.comment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.comment-author {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.comment-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--gradient);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.comment-name {
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.comment-time {
+    font-size: 11px;
+    color: var(--text-secondary);
+}
+
+.comment-content {
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text-secondary);
+}
+
+/* Users Online Section */
+.users-section {
+    background: var(--glass);
+    backdrop-filter: blur(20px);
+    border-radius: 24px;
+    border: 1px solid var(--card-border);
+    padding: 25px;
+    margin-top: 30px;
+}
+
+.users-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.users-title i {
+    color: var(--success);
+}
+
+.users-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.user-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: rgba(10, 10, 15, 0.5);
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+.user-item:hover {
+    background: rgba(10, 10, 15, 0.7);
+}
+
+.user-item-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--gradient);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.user-item-info {
+    flex: 1;
+}
+
+.user-item-name {
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.user-item-status {
+    font-size: 11px;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--success);
+}
+
 /* Footer */
 .footer {
     text-align: center;
@@ -546,17 +943,35 @@ body::before {
 }
 
 /* Responsive */
-@media (max-width: 600px) {
-    .container {
-        max-width: 100%;
+@media (max-width: 1024px) {
+    .main-content {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .header {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
     }
     
+    .user-section {
+        flex-direction: column;
+    }
+    
+    .user-info {
+        text-align: center;
+    }
+}
+
+@media (max-width: 600px) {
     .card {
         padding: 25px;
     }
     
     .logo-text {
-        font-size: 32px;
+        font-size: 24px;
     }
     
     .download-options {
@@ -572,81 +987,191 @@ body::before {
 </head>
 
 <body>
-<div class="container">
-    <!-- Header -->
+<!-- Login Page -->
+<div class="login-container" id="loginContainer">
+    <div class="login-card">
+        <div class="login-icon">
+            <i class="fas fa-download"></i>
+        </div>
+        <h1 class="login-title">DARKX PRO</h1>
+        <p class="login-subtitle">Social Media Video Downloader</p>
+        
+        <div class="input-group">
+            <label for="loginEmail">Email Address</label>
+            <input type="email" id="loginEmail" placeholder="Enter your email">
+        </div>
+        
+        <div class="input-group">
+            <label for="loginPassword">Password</label>
+            <input type="password" id="loginPassword" placeholder="Enter your password">
+        </div>
+        
+        <button class="auth-btn" onclick="login()">Login to Continue</button>
+        
+        <div class="auth-toggle">
+            Don't have an account? <a onclick="showRegister()">Register here</a>
+        </div>
+    </div>
+</div>
+
+<!-- Register Page -->
+<div class="login-container" id="registerContainer" style="display: none;">
+    <div class="login-card">
+        <div class="login-icon">
+            <i class="fas fa-user-plus"></i>
+        </div>
+        <h1 class="login-title">CREATE ACCOUNT</h1>
+        <p class="login-subtitle">Join DarkX Pro Community</p>
+        
+        <div class="input-group">
+            <label for="registerName">Full Name</label>
+            <input type="text" id="registerName" placeholder="Enter your full name">
+        </div>
+        
+        <div class="input-group">
+            <label for="registerEmail">Email Address</label>
+            <input type="email" id="registerEmail" placeholder="Enter your email">
+        </div>
+        
+        <div class="input-group">
+            <label for="registerPassword">Password</label>
+            <input type="password" id="registerPassword" placeholder="Create a password">
+        </div>
+        
+        <div class="input-group">
+            <label for="registerConfirmPassword">Confirm Password</label>
+            <input type="password" id="registerConfirmPassword" placeholder="Confirm your password">
+        </div>
+        
+        <button class="auth-btn" onclick="register()">Create Account</button>
+        
+        <div class="auth-toggle">
+            Already have an account? <a onclick="showLogin()">Login here</a>
+        </div>
+    </div>
+</div>
+
+<!-- Main App Container -->
+<div class="container" id="appContainer">
+    <!-- Header with User Info -->
     <div class="header">
-        <div class="logo-container">
+        <div class="logo-section">
             <div class="logo-icon">
                 <i class="fas fa-download"></i>
             </div>
             <div>
                 <div class="logo-text">DARKX PRO</div>
-                <div style="font-size: 14px; color: var(--text-secondary);">Social Media Downloader</div>
+                <div style="font-size: 12px; color: var(--text-secondary);">Social Media Downloader</div>
             </div>
         </div>
-        <p class="tagline">Download videos from TikTok and Instagram in HD quality without watermark</p>
+        
+        <div class="user-section">
+            <div class="user-info">
+                <div class="user-name" id="userName">Loading...</div>
+                <div class="user-email" id="userEmail">user@example.com</div>
+            </div>
+            <div class="user-avatar" id="userAvatar">U</div>
+            <button class="logout-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+        </div>
     </div>
     
-    <!-- Service Selector -->
-    <div class="service-selector">
-        <button class="service-btn active" id="tiktokBtn" onclick="switchService('tiktok')">
-            <i class="fab fa-tiktok service-icon"></i>
-            TikTok
-        </button>
-        <button class="service-btn" id="instagramBtn" onclick="switchService('instagram')">
-            <i class="fab fa-instagram service-icon"></i>
-            Instagram
-        </button>
-    </div>
-    
-    <!-- Main Card -->
-    <div class="card" id="mainCard">
-        <!-- Input Section -->
-        <div class="input-section">
-            <div class="section-title">
-                <div class="title-icon" id="titleIcon">
-                    <i class="fab fa-tiktok"></i>
-                </div>
-                <span id="serviceTitle">Enter TikTok Video URL</span>
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Left Column: Downloader -->
+        <div class="downloader-section">
+            <p class="tagline">Download videos from TikTok and Instagram in HD quality without watermark. Supports TikTok Videos • Instagram Reels • Posts • Stories</p>
+            
+            <!-- Service Selector -->
+            <div class="service-selector">
+                <button class="service-btn active" id="tiktokBtn" onclick="switchService('tiktok')">
+                    <i class="fab fa-tiktok service-icon"></i>
+                    TikTok
+                </button>
+                <button class="service-btn" id="instagramBtn" onclick="switchService('instagram')">
+                    <i class="fab fa-instagram service-icon"></i>
+                    Instagram
+                </button>
             </div>
             
-            <div class="input-container">
-                <i class="fas fa-link input-icon"></i>
-                <input type="text" id="url" class="input-field" placeholder="Paste your video link here..." autocomplete="off">
+            <!-- Main Card -->
+            <div class="card" id="mainCard">
+                <!-- Input Section -->
+                <div class="input-section">
+                    <div class="section-title">
+                        <div class="title-icon" id="titleIcon">
+                            <i class="fab fa-tiktok"></i>
+                        </div>
+                        <span id="serviceTitle">Enter TikTok Video URL</span>
+                    </div>
+                    
+                    <div class="input-container">
+                        <i class="fas fa-link input-icon"></i>
+                        <input type="text" id="url" class="input-field" placeholder="Paste your video link here..." autocomplete="off">
+                    </div>
+                </div>
+                
+                <!-- Download Button -->
+                <button class="btn-primary" id="downloadBtn" onclick="downloadMedia()">
+                    <i class="fas fa-download"></i>
+                    <span id="downloadBtnText">Download TikTok Video</span>
+                </button>
+                
+                <!-- Loader -->
+                <div class="loader-container" id="loader">
+                    <div class="advanced-loader">
+                        <div class="loader-ring"></div>
+                    </div>
+                    <p class="loader-text" id="loaderText">Processing video...</p>
+                </div>
+                
+                <!-- Result Section -->
+                <div class="result-container" id="resultContainer">
+                    <div class="result-header">
+                        <div class="result-title" id="resultTitle">Video Ready to Download</div>
+                    </div>
+                    
+                    <!-- Media Preview -->
+                    <div class="media-preview" id="mediaPreview">
+                        <img id="previewImage" class="preview-image" alt="Video Preview">
+                        <div class="media-info" id="mediaInfo">
+                            <!-- Media info will be populated here -->
+                        </div>
+                    </div>
+                    
+                    <!-- Download Options -->
+                    <div class="download-options" id="downloadOptions">
+                        <!-- Options will be populated here -->
+                    </div>
+                </div>
             </div>
         </div>
         
-        <!-- Download Button -->
-        <button class="btn-primary" id="downloadBtn" onclick="downloadMedia()">
-            <i class="fas fa-download"></i>
-            <span id="downloadBtnText">Download TikTok Video</span>
-        </button>
-        
-        <!-- Loader -->
-        <div class="loader-container" id="loader">
-            <div class="advanced-loader">
-                <div class="loader-ring"></div>
-            </div>
-            <p class="loader-text" id="loaderText">Processing video...</p>
-        </div>
-        
-        <!-- Result Section -->
-        <div class="result-container" id="resultContainer">
-            <div class="result-header">
-                <div class="result-title" id="resultTitle">Video Ready to Download</div>
-            </div>
-            
-            <!-- Media Preview -->
-            <div class="media-preview" id="mediaPreview">
-                <img id="previewImage" class="preview-image" alt="Video Preview">
-                <div class="media-info" id="mediaInfo">
-                    <!-- Media info will be populated here -->
+        <!-- Right Column: Comments & Users -->
+        <div class="sidebar-section">
+            <!-- Comments Section -->
+            <div class="comments-section">
+                <h3 class="comments-title"><i class="fas fa-comments"></i> Community Comments</h3>
+                
+                <!-- Comment Form -->
+                <div class="comments-form">
+                    <textarea class="comment-input" id="commentInput" placeholder="Share your thoughts or ask a question..."></textarea>
+                    <button class="comment-submit" onclick="postComment()">
+                        <i class="fas fa-paper-plane"></i> Post Comment
+                    </button>
+                </div>
+                
+                <!-- Comments List -->
+                <div class="comments-list" id="commentsList">
+                    <!-- Comments will be loaded here -->
                 </div>
             </div>
             
-            <!-- Download Options -->
-            <div class="download-options" id="downloadOptions">
-                <!-- Options will be populated here -->
+            <!-- Online Users Section -->
+            <div class="users-section">
+                <h3 class="users-title"><i class="fas fa-users"></i> Active Users</h3>
+                <div class="users-list" id="usersList">
+                    <!-- Users will be loaded here -->
+                </div>
             </div>
         </div>
     </div>
@@ -654,7 +1179,7 @@ body::before {
     <!-- Footer -->
     <div class="footer">
         <p>© 2024 DarkX Pro Downloader. All rights reserved.</p>
-        <p style="font-size: 12px; margin-top: 5px;">Supports: TikTok Videos • Instagram Reels • Posts • Stories</p>
+        <p style="font-size: 12px; margin-top: 5px;">Logged in users: <span id="onlineUsersCount">0</span> • Total comments: <span id="totalCommentsCount">0</span></p>
     </div>
 </div>
 
@@ -665,8 +1190,29 @@ body::before {
 </div>
 
 <script>
-// Current service
+// Firebase Configuration
+const firebaseConfig = {
+    apiKey: "AIzaSyDjGivR8b6E4iDv-4VI5OD5qjzq7-LB6vA",
+    authDomain: "tikdownload.firebaseapp.com",
+    databaseURL: "https://tikdownload-default-rtdb.firebaseio.com",
+    projectId: "tikdownload",
+    storageBucket: "tikdownload.firebasestorage.app",
+    messagingSenderId: "26198841059",
+    appId: "1:26198841059:web:36a989f501cbe8529b57d6",
+    measurementId: "G-F27P5LYHQY"
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const database = firebase.database();
+const analytics = firebase.analytics();
+
+// Global variables
 let currentService = 'tiktok';
+let currentUser = null;
+let commentsRef = null;
+let usersRef = null;
 
 // Show notification
 function showNotification(message, type = 'success') {
@@ -698,6 +1244,299 @@ function showNotification(message, type = 'success') {
     setTimeout(() => {
         notification.style.display = 'none';
     }, 3000);
+}
+
+// Show login page
+function showLogin() {
+    document.getElementById('loginContainer').style.display = 'block';
+    document.getElementById('registerContainer').style.display = 'none';
+}
+
+// Show register page
+function showRegister() {
+    document.getElementById('loginContainer').style.display = 'none';
+    document.getElementById('registerContainer').style.display = 'block';
+}
+
+// Login function
+function login() {
+    const email = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPassword').value.trim();
+    
+    if (!email || !password) {
+        showNotification('Please enter both email and password', 'error');
+        return;
+    }
+    
+    auth.signInWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+            currentUser = userCredential.user;
+            showNotification('Login successful!', 'success');
+            initializeAppForUser();
+        })
+        .catch((error) => {
+            console.error('Login error:', error);
+            showNotification(error.message, 'error');
+        });
+}
+
+// Register function
+function register() {
+    const name = document.getElementById('registerName').value.trim();
+    const email = document.getElementById('registerEmail').value.trim();
+    const password = document.getElementById('registerPassword').value.trim();
+    const confirmPassword = document.getElementById('registerConfirmPassword').value.trim();
+    
+    if (!name || !email || !password || !confirmPassword) {
+        showNotification('Please fill all fields', 'error');
+        return;
+    }
+    
+    if (password !== confirmPassword) {
+        showNotification('Passwords do not match', 'error');
+        return;
+    }
+    
+    if (password.length < 6) {
+        showNotification('Password must be at least 6 characters', 'error');
+        return;
+    }
+    
+    auth.createUserWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+            const user = userCredential.user;
+            
+            // Update user profile
+            return user.updateProfile({
+                displayName: name
+            }).then(() => {
+                // Save additional user data to database
+                return database.ref('users/' + user.uid).set({
+                    name: name,
+                    email: email,
+                    createdAt: firebase.database.ServerValue.TIMESTAMP,
+                    lastLogin: firebase.database.ServerValue.TIMESTAMP
+                });
+            });
+        })
+        .then(() => {
+            showNotification('Account created successfully!', 'success');
+            showLogin();
+        })
+        .catch((error) => {
+            console.error('Registration error:', error);
+            showNotification(error.message, 'error');
+        });
+}
+
+// Logout function
+function logout() {
+    // Remove user from online users
+    if (currentUser) {
+        database.ref('onlineUsers/' + currentUser.uid).remove();
+    }
+    
+    auth.signOut().then(() => {
+        showNotification('Logged out successfully', 'success');
+        document.getElementById('appContainer').style.display = 'none';
+        document.getElementById('loginContainer').style.display = 'block';
+        document.getElementById('registerContainer').style.display = 'none';
+        currentUser = null;
+    });
+}
+
+// Initialize app for logged in user
+function initializeAppForUser() {
+    const user = auth.currentUser;
+    
+    if (!user) return;
+    
+    currentUser = user;
+    
+    // Update user info in header
+    document.getElementById('userName').textContent = user.displayName || 'User';
+    document.getElementById('userEmail').textContent = user.email;
+    document.getElementById('userAvatar').textContent = (user.displayName || 'U').charAt(0).toUpperCase();
+    
+    // Update user's last login
+    database.ref('users/' + user.uid).update({
+        lastLogin: firebase.database.ServerValue.TIMESTAMP
+    });
+    
+    // Mark user as online
+    const userStatusRef = database.ref('onlineUsers/' + user.uid);
+    userStatusRef.set({
+        name: user.displayName || 'Anonymous',
+        email: user.email,
+        lastActive: firebase.database.ServerValue.TIMESTAMP
+    });
+    
+    // Remove user from online users when they disconnect
+    userStatusRef.onDisconnect().remove();
+    
+    // Show app container
+    document.getElementById('loginContainer').style.display = 'none';
+    document.getElementById('registerContainer').style.display = 'none';
+    document.getElementById('appContainer').style.display = 'block';
+    
+    // Initialize comments and users
+    initializeComments();
+    initializeUsers();
+    
+    // Focus on URL input
+    document.getElementById('url').focus();
+    
+    // Log analytics event
+    analytics.logEvent('user_login');
+}
+
+// Initialize comments system
+function initializeComments() {
+    commentsRef = database.ref('comments');
+    
+    // Load existing comments
+    commentsRef.orderByChild('timestamp').limitToLast(20).on('value', (snapshot) => {
+        const comments = [];
+        snapshot.forEach((childSnapshot) => {
+            comments.push(childSnapshot.val());
+        });
+        
+        // Reverse to show newest first
+        comments.reverse();
+        
+        // Update comments list
+        updateCommentsList(comments);
+        
+        // Update count
+        document.getElementById('totalCommentsCount').textContent = comments.length;
+    });
+}
+
+// Update comments list in UI
+function updateCommentsList(comments) {
+    const commentsList = document.getElementById('commentsList');
+    commentsList.innerHTML = '';
+    
+    if (comments.length === 0) {
+        commentsList.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 20px;">No comments yet. Be the first to comment!</p>';
+        return;
+    }
+    
+    comments.forEach((comment) => {
+        const commentElement = document.createElement('div');
+        commentElement.className = 'comment-item';
+        
+        const timeAgo = formatTimeAgo(comment.timestamp);
+        
+        commentElement.innerHTML = `
+            <div class="comment-header">
+                <div class="comment-author">
+                    <div class="comment-avatar">${comment.authorName.charAt(0).toUpperCase()}</div>
+                    <div>
+                        <div class="comment-name">${comment.authorName}</div>
+                        <div class="comment-time">${timeAgo}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="comment-content">${comment.text}</div>
+        `;
+        
+        commentsList.appendChild(commentElement);
+    });
+}
+
+// Post a new comment
+function postComment() {
+    const commentInput = document.getElementById('commentInput');
+    const text = commentInput.value.trim();
+    
+    if (!text) {
+        showNotification('Please enter a comment', 'error');
+        return;
+    }
+    
+    if (!currentUser) {
+        showNotification('You must be logged in to comment', 'error');
+        return;
+    }
+    
+    const comment = {
+        text: text,
+        authorId: currentUser.uid,
+        authorName: currentUser.displayName || 'Anonymous',
+        timestamp: firebase.database.ServerValue.TIMESTAMP,
+        email: currentUser.email
+    };
+    
+    commentsRef.push(comment)
+        .then(() => {
+            commentInput.value = '';
+            showNotification('Comment posted successfully!', 'success');
+            analytics.logEvent('post_comment');
+        })
+        .catch((error) => {
+            console.error('Error posting comment:', error);
+            showNotification('Failed to post comment', 'error');
+        });
+}
+
+// Initialize online users list
+function initializeUsers() {
+    usersRef = database.ref('onlineUsers');
+    
+    usersRef.on('value', (snapshot) => {
+        const users = [];
+        snapshot.forEach((childSnapshot) => {
+            users.push(childSnapshot.val());
+        });
+        
+        updateUsersList(users);
+        document.getElementById('onlineUsersCount').textContent = users.length;
+    });
+}
+
+// Update users list in UI
+function updateUsersList(users) {
+    const usersList = document.getElementById('usersList');
+    usersList.innerHTML = '';
+    
+    users.forEach((user) => {
+        const userElement = document.createElement('div');
+        userElement.className = 'user-item';
+        
+        const timeAgo = formatTimeAgo(user.lastActive);
+        
+        userElement.innerHTML = `
+            <div class="user-item-avatar">${user.name.charAt(0).toUpperCase()}</div>
+            <div class="user-item-info">
+                <div class="user-item-name">${user.name}</div>
+                <div class="user-item-status">
+                    <span class="status-dot"></span>
+                    Active ${timeAgo}
+                </div>
+            </div>
+        `;
+        
+        usersList.appendChild(userElement);
+    });
+}
+
+// Format timestamp to time ago
+function formatTimeAgo(timestamp) {
+    if (!timestamp) return 'just now';
+    
+    const seconds = Math.floor((Date.now() - timestamp) / 1000);
+    
+    if (seconds < 60) return 'just now';
+    
+    const minutes = Math.floor(seconds / 60);
+    if (minutes < 60) return `${minutes}m ago`;
+    
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return `${hours}h ago`;
+    
+    const days = Math.floor(hours / 24);
+    return `${days}d ago`;
 }
 
 // Switch between services
@@ -789,9 +1628,29 @@ async function downloadMedia() {
             
             // Process TikTok response
             await processTikTokResponse(data.data);
+            
+            // Log download event
+            if (currentUser) {
+                database.ref('downloads/' + currentUser.uid).push({
+                    service: 'tiktok',
+                    url: url,
+                    timestamp: firebase.database.ServerValue.TIMESTAMP
+                });
+                analytics.logEvent('download_tiktok');
+            }
         } else {
             // Instagram - Use working APIs with fallback
             await downloadInstagramVideo(url);
+            
+            // Log download event
+            if (currentUser) {
+                database.ref('downloads/' + currentUser.uid).push({
+                    service: 'instagram',
+                    url: url,
+                    timestamp: firebase.database.ServerValue.TIMESTAMP
+                });
+                analytics.logEvent('download_instagram');
+            }
         }
         
         // Hide loader and show result
@@ -1069,45 +1928,35 @@ function formatDuration(seconds) {
     return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
 }
 
-// Initialize
+// Initialize app on load
 document.addEventListener('DOMContentLoaded', function() {
-    const urlInput = document.getElementById('url');
-    
-    // Focus on input
-    urlInput.focus();
-    
-    // Try to paste from clipboard
-    if (navigator.clipboard) {
-        navigator.clipboard.readText()
-            .then(text => {
-                if (text.includes('tiktok.com') || text.includes('instagram.com')) {
-                    urlInput.value = text;
-                    
-                    // Auto-select service based on URL
-                    if (text.includes('tiktok.com')) {
-                        switchService('tiktok');
-                    } else if (text.includes('instagram.com')) {
-                        switchService('instagram');
-                    }
-                    
-                    showNotification('Video link detected from clipboard!', 'info');
-                }
-            })
-            .catch(() => {
-                // Clipboard access failed, ignore
-            });
-    }
+    // Check if user is already logged in
+    auth.onAuthStateChanged((user) => {
+        if (user) {
+            initializeAppForUser();
+        } else {
+            document.getElementById('loginContainer').style.display = 'block';
+            document.getElementById('appContainer').style.display = 'none';
+        }
+    });
     
     // Enter key to download
-    urlInput.addEventListener('keypress', function(e) {
+    document.getElementById('url').addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
             downloadMedia();
         }
     });
     
     // Clear result when input changes
-    urlInput.addEventListener('input', function() {
+    document.getElementById('url').addEventListener('input', function() {
         document.getElementById('resultContainer').style.display = 'none';
+    });
+    
+    // Enter key to post comment
+    document.getElementById('commentInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter' && e.ctrlKey) {
+            postComment();
+        }
     });
 });
 </script>
